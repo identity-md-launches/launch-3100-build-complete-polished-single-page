@@ -1,72 +1,84 @@
 # SqueekWheel: Hamster-Powered Mining
 
-A complete, guest-first idle game in a single `index.html`. Mined by hamsters. Secured by squeaks.
+Browse freely. Connect your wallet to start mining.
 
-## Run, preview and rebuild
+The existing hamster workshop, clicker loop, upgrades, chain, events and versioned save format are preserved. Playing now requires a connected address and a free sign-in signature. The full static production export is in `dist/`.
 
-**No installation is needed to play.** Open `index.html` in a modern browser, or serve the included `dist/` directory with any static host. The application has no runtime packages, framework, external fonts, asset CDN, backend or required wallet. The package manifest and lockfile describe a dependency-free project.
+## Install, preview and rebuild
 
-For a local HTTP preview, use Node.js 20 or newer:
+Use Node.js 22 or newer. This project has no application dependencies, so there is no package installation step. The existing package manifest and lockfile are included unchanged.
 
 ```sh
 npm run build
 npm run preview
 ```
 
-Open `http://localhost:4173/preview/`. The preview stays in the foreground; stop it with Ctrl+C. `npm run build` validates the embedded JavaScript and metadata, then copies the complete source page and local social image into `dist/`. It is packaging, not a required compilation step. Source and export are both included. Relative URLs and hash links work under a static hosting subpath.
+Open `http://localhost:4173/preview/`. Stop the preview with Ctrl+C. `npm run build` checks the embedded JavaScript and metadata, then exports `index.html` and `social-card.svg` to `dist/`. Serve that directory on any static host, including a subpath. All assets are relative or inline; no CDN, external font, runtime package, backend or credential is required. Use HTTPS for a hosted wallet connection.
 
-## What is included
+## Wallet and browse mode
 
-- Animated SVG hamster and wheel, passive earnings, Turbo by button or Space, cooldown, floating rewards and number tweening.
-- Rising block difficulty, four rarities, illustrative hashes, timestamps, rewards and an inspectable chain.
-- Twelve Wheel/Fuel/Crew upgrades with exponential costs, owned counts, effect previews and Buy ×1/×10/Max.
-- Golden Seed, Cat Nearby with an actionable laser, Lucky Block and timed Power Surge events.
-- Levels 1–50, six titles, confetti, 25 badges, daily/weekly quests, a seven-day check-in streak and four season milestones.
-- Confirmed rebirth with a permanent multiplier; permanent SP, XP, chain, badges and streaks survive.
-- Nicknames, deterministic avatars, a local leaderboard with explicit Demo players, referral copying and a downloadable personal hamster card.
-- Light/dark themes, reduced motion, an animation pause control, remembered opt-in synthesized sound, keyboard tabs, skip link, live notifications and labeled native dialogs/forms.
-- Ten-second autosaves, versioned migration, import/export, confirmed reset and an eight-hour offline earning cap. Blocked localStorage falls back to session memory and explains how to export.
+Every management panel, upgrade price, badge requirement, quest, season milestone, collection breed, cosmetic, statistic, help page and FAQ is available before connecting. The wheel overlay and locked game actions open the same connect sheet. Locked controls remain focusable, show a lock and explain “Connect your wallet to play.” Taps, Space, Turbo, purchases, claims, check-in, challenges, spin, save import and reset also check sign-in in their action handlers.
 
-## Optional wallets
+The native EIP-1193 / EIP-6963 picker supports MetaMask, Rabby, Coinbase Wallet, OKX and Trust. Discovery waits 1.5 seconds before showing installation links when no wallet is found. Mobile visitors can use the provided MetaMask, Coinbase and Trust app links, or paste the copied page URL into Rabby or OKX’s wallet browser. No relay, project ID or SDK account is used.
 
-Guest play is complete. There is no wallet prompt on load. The header and Profile offer **Connect Wallet (optional)**. EIP-1193 browser providers and EIP-6963 announcements are supported, alongside installation and wallet-browser opening links. No relay, project ID or wallet SDK is needed.
+Connecting requests `eth_requestAccounts`, then one `personal_sign` of “Sign in to SqueekWheel,” including address, nonce, timestamp and site origin. Standard 65-byte EIP-191 account signatures are recovered locally and must match the address. There is no transaction, token approval or gas request. Contract/passkey account signatures requiring EIP-1271 are outside this native account connector’s support.
 
-Linking requires confirmation and carries current progress to the address save. A pre-existing address save is replaced only after an explicit warning in that confirmation. Export first to retain both. Disconnect copies current progress back to the guest save. Account changes load an existing address profile or carry current progress into a new one. Reconnection uses `eth_accounts` silently and respects an explicit disconnect.
+SqueekWheel only reads your address. It never moves your funds. Balance and network are also read for header display; neither controls the economy. `CHAIN_CONFIG` prefers Ethereum and supplies public Switch/Add Network parameters. A different network produces a dismissible hint and keeps mining available.
 
-Connecting unlocks address avatars, hats, wheel colors, the Verified Miner profile title, three optional badges, and a **one-time 5% addition to current SP**. It does not multiply later SP earnings. The checkmark requires a separate optional `personal_sign` message. Its EIP-191 signature is recovered locally with Keccak-256 and secp256k1 and must match the connected address. Verification is local profile decoration, not server authentication.
+Only one wallet request can be pending. Rejection, locked wallets, an existing request, missing balance/network reads and disconnection have calm recovery messages. Account and network versions prevent late responses from affecting another address or labeling an old balance with a new chain. Disconnect pauses play and returns to browse mode. Reload uses `eth_accounts` silently; a locally verified sign-in younger than seven days resumes without another prompt. An expired sign-in waits for the player to sign again.
 
-`CHAIN_CONFIG` is at the beginning of the embedded script. Its five empty fields intentionally leave the game network-independent. An owner can set a name, hexadecimal chain ID, public HTTPS RPC URL, native symbol and HTTPS explorer to enable the optional Switch/Add Network control. Wrong-network hints are dismissible. No chain configuration or credential is needed to run the game. No private key, approval or transaction is requested.
+## Harder game and claims
 
-## Saves and local data
+- Starting production: **0.4 squeeks/sec**. Twelve original upgrades retain their effects; starting prices are 3× the earlier prices and rise by **23% per owned unit**. Buy one, ten or Max.
+- First block: **240 squeeks**. Difficulty rises by **20% per run block**, with the current target and multiplier beside the wheel. Original block rarities, illustrative hashes and inspectable records remain.
+- Turbo: at least six squeeks, every three seconds. Each boost adds 24% heat; reaching 100% jams production and taps for five seconds. Passive cooling removes 1%/sec. The fan removes 35% heat every two seconds and cannot bypass the jam timer.
+- **74 badges**, including Bronze, Silver and Gold tiers, hard time-window secrets and three challenge badges. Most Bronze thresholds are 4× the earlier requirement. Existing unlock dates are preserved and labeled when the new threshold has not yet been reached. All locked badges show their exact requirements and live progress. The wardrobe tiers require 3, 5 and all 6 cosmetics.
+- Badge Claim signs a readable message naming the badge, tier, address, nonce and time. Claims shows the saved date, expandable receipt and copy control. **Claim all ready** uses one signature for the complete named batch. **Receipts are signed by your wallet.** They are local game records, not NFTs or contract attestations.
+- Daily/weekly quest requirements are 4× higher. Season targets are 1,000 / 4,000 / 10,000 / 20,000 lifetime SP. Timed challenges are five blocks in 60 seconds, twelve Turbos in 60 seconds without a jam, and 100 wheel taps in 30 seconds; each awards 150 SP and a claimable badge once.
+- Rebirth unlocks at 25 run blocks. It resets squeeks, upgrades, block progress and run difficulty, while retaining SP, lifetime earnings, XP, badges, receipts, collection, cosmetics, streaks and the chain.
 
-Saves use `squeekwheel:v3:<guest-id-or-address>` in browser storage. Guest identity, preferences and local leaderboard records use separate namespaced keys. The importer accepts the versioned `SQW1.`, `SQW2.` and `SQW3.` envelopes and validates every supported field; imports clear verification. Daily/weekly counters reset in UTC. Secret time badges use the player’s local hour. Offline rewards are collected into the current period and use base production plus the permanent rebirth multiplier, without temporary event effects.
+SP balance is spendable on cosmetics. **Lifetime SP** records all SP earned, drives season milestones and ranks, and is never reduced by cosmetic spending. SP and squeeks are game points without monetary value.
 
-The leaderboard is **on this device only**. Eight seeded competitors are labeled Demo. `leaderboardAdapter.getLeaderboard()` and `.submitScore()` are the commented replacement points for a future API. Wallets do not provide cloud saves. Export a backup before clearing browser data or moving devices. Referral codes are local sharing text; they do not track visitors or grant fabricated rewards.
+## Added local features
+
+| Feature | Behavior |
+| --- | --- |
+| Hamster collection | Cheddar starts available. One / five Epic or Legendary lucky blocks unlock Silver Dwarf / Winter Floof. One / three Rebirths unlock Golden Syrian / Cosmic Campbell. Only the active breed’s disclosed speed, cooling or block-SP perk applies; its fur and name appear on the wheel. |
+| Cosmetics | Top hat, crown, mint/violet wheels and cheese/circuit block skins cost 100–500 SP. Owned items can be equipped without paying again. Earlier owned cosmetics remain available. |
+| Daily Lucky Spin | One free spin per UTC day. 45% awards 30/60/90 SP equally; 45% awards 200 squeeks; 10% awards an Epic block. The result and used day are saved. |
+| Market events | A ten-minute game cycle: three minutes of Bull Run (1.5× block SP), two minutes of Cheese Crash (0.65×), then five steady minutes. The stationary ticker shows the current multiplier and remaining time. These are game events, not financial market data. |
+| Stats | Two accessible inline-SVG charts use actual local samples every ten seconds, retaining 120 samples. Blocks/hour is computed between adjacent observations. Empty charts explain when samples will appear. |
+| Comfort settings | Remembered sound/music volume, light/dark theme, reduced motion, animation pause and export/import. Audio is synthesized, muted by default, and starts only after interaction. Audio failure cannot stop the game. |
+
+## Saves and earlier progress
+
+Profiles and leaderboard entries are keyed by the lowercase wallet address. Account changes load that address’s own profile; a new address never inherits the previous player’s progress. The deterministic hamster avatar also uses the address. The leaderboard is explicitly local to this browser, with seeded competitors labeled **Demo**; there is no online ranking or cloud save.
+
+The existing `squeekwheel:v3:<address>` keys and `SQW3.` export format remain. Import also accepts earlier SQW1/SQW2 envelopes with validated defaults for newer fields. Importing an address-bound backup requires that same signed-in address. Sign-in credentials are separate from the game export, so importing progress cannot sign someone in. Game saves are editable local data and do not establish a verified competitive score.
+
+An earlier save from before wallet-gated play remains on the device. The signed-in Profile offers an explicit, confirmed one-time import. It replaces the destination progress after a warning and retains the original backup. Existing address profiles load directly.
+
+Autosave runs every ten seconds and on page hide. Offline income is applied **after sign-in**, capped at eight hours, using base speed, permanent multiplier and the active breed’s speed perk. Temporary events and market bonuses are excluded. Daily/weekly counters and spin availability use UTC; time-window badges use local time. Challenges reset on reload, account change or a background pause.
+
+Every storage operation is caught. Blocked storage or quota failures preserve fresh session data in memory and show “Session only · export to keep.” Export before closing when storage is unavailable. Save export handles large batches of signed receipts without overflowing the JavaScript argument stack. Import/reset confirmations cannot mutate a profile after the account changes.
 
 ## Validation
 
-The production build, TypeScript `checkJs` pass and **122 interaction assertions passed**. The interaction suite exercises the production export using Happy DOM, including guest play, purchases, mining, events, quest claims, streaks, offline caps, rebirth, import/export, nickname changes, wallet rejection/locking/discovery/linking, signature recovery, account switching, silent reconnection, blocked storage, keyboard focus and accessible button names. Eighteen declared solid-color contrast pairs passed their applicable thresholds.
-
-To reproduce the optional development checks, use Python 3 and Node.js 24:
+The production build and TypeScript `checkJs` typecheck passed. **169 browser assertions passed with zero console, page or resource errors**, and taste@1 passed **16/16 checks**. The Chromium interaction suite exercises the production export with simulated EIP-1193 providers and fresh ephemeral test signers. It covers wallet errors, real signature recovery, gameplay, claims, account/network races, persistence, migration, large saves, storage/audio denial and responsive layouts. No real wallet account or funds are used. Final counts and the six-domain design review are recorded in [VALIDATION.md](./VALIDATION.md).
 
 ```sh
 python3 scripts/setup-checks.py
 npm run build
 npm run typecheck
-npm test
+IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright npm test
 ```
 
-The setup helper verifies package integrity and unpacks pinned validation tools only into disposable `test/scratch/tools/`, without creating `node_modules`. These are not application dependencies and are not part of the export. A globally available TypeScript compiler can also run the typecheck.
+The setup helper prepares validation-only tooling in disposable `test/scratch/`. A global TypeScript compiler also works. For another development machine, provide an installed Playwright module through `IMD_PLAYWRIGHT` and its browser location through `PLAYWRIGHT_BROWSERS_PATH`; those tools are not production dependencies.
 
-**Rendered checks remain unperformed.** The assigned browser could not launch; independent Chromium and WebKit attempts also could not open a page. The pinned taste@1 probe was attempted against the production export and exited 2 before measurement. No mobile or desktop screenshots, rendered contrast/overflow measurements, native zoom or screen-reader results are claimed. Canvas PNG downloads, clipboard permissions, audio output and real wallet/mobile-app behavior still need a functioning browser. See [VALIDATION.md](./VALIDATION.md) for coverage, findings and exact commands.
+The pinned taste@1 probe was run against the export at 320, 390 and 1440 widths, including reduced motion. Direct screenshots and interaction checks also cover 820px and a connected mobile header. Physical wallet extensions, wallet app links, audible sound, a screen reader, native browser zoom and Safari were not tested. The application’s local signing scheme is not server authentication.
 
-## Files and design references
+## Source and attribution
 
-- `index.html`: all application HTML, CSS, JavaScript and inline art.
-- `dist/index.html`, `dist/social-card.svg`: finished static export.
-- `social-card.svg`: local Open Graph/Twitter image.
-- [DESIGN.md](./DESIGN.md): implemented tokens, type, components and breakpoints.
-- [VALIDATION.md](./VALIDATION.md): actual results and limitations.
-- `scripts/`: build, foreground preview and optional validation utilities.
+`index.html` holds the application, styles and inline art. `dist/` holds the complete static export. `scripts/validate.mjs` owns browser interaction checks; no test hooks ship in the application. [DESIGN.md](./DESIGN.md) documents the final tokens, typography, components and responsive behavior.
 
-Design guidance was adapted from Jakub Krehel’s **Better Interface** (MIT), commit `267330e1adfc66a718fb65fa6918c1f06d0a689e`, and documentation guidance from Paul Bakaus’s **Impeccable** (Apache-2.0), commit `9d715cc4f5564a990ca8345abfdd5df6dc9b41c8`. Their notices and license texts are preserved in [DESIGN-GUIDANCE-LICENSE.txt](./DESIGN-GUIDANCE-LICENSE.txt).
+Guidance: Jakub Krehel’s Better Interface (MIT), commit `267330e1adfc66a718fb65fa6918c1f06d0a689e`; documentation method: Paul Bakaus’s Impeccable (Apache-2.0), commit `9d715cc4f5564a990ca8345abfdd5df6dc9b41c8`. Notices and license texts remain in [DESIGN-GUIDANCE-LICENSE.txt](./DESIGN-GUIDANCE-LICENSE.txt). Mobile link references: [MetaMask](https://docs.metamask.io/metamask-connect/evm/guides/metamask-exclusive/use-deeplinks), [Coinbase](https://docs.cdp.coinbase.com/wallet-sdk/docs/deep-link), [Trust](https://developer.trustwallet.com/developer/develop-for-trust/deeplinking).

@@ -1,87 +1,113 @@
-# SqueekWheel validation record
+# SqueekWheel implementation validation
 
-## Status and scope
+Reviewed on 2026-11-07 against the production export served under `/preview/`. This is worker-side evidence, not independent certification. The existing standalone HTML/CSS/JavaScript stack, art, root package manifest, lockfile and build configuration were preserved.
 
-The full static implementation is delivered in `index.html` and `dist/`, with source, package manifest, lockfile and documentation. Production build, JavaScript typechecking and 122 DOM interaction assertions passed. **Required rendered browser verification remains incomplete:** the assigned browser failed before navigation, independent Chromium/WebKit attempts could not open a page, and taste@1 could not measure the production export. This report is worker evidence, not independent certification.
+## Results
 
-The reviewed scope is guest gameplay, all five management panels, save/offline behavior, optional wallets, both source theme variants, motion preferences and responsive source rules. The supplied vanilla/single-page specification takes precedence over generic framework/SDK examples in the references. Empty optional network configuration is intentional; no requester-owned value is required for the complete game.
-
-## Actual commands and outcomes
-
-| Command/check | Actual result |
+| Check | Actual result |
 | --- | --- |
-| `python3 scripts/setup-checks.py` | Passed; pinned validation tools unpacked into disposable scratch after integrity checks |
-| `npm --cache test/scratch/npm-cache run build` | Passed; copies complete HTML and local share image to `dist/`; parses embedded JavaScript and checks metadata |
-| `npm --cache test/scratch/npm-cache run typecheck` | Passed; TypeScript 5.9.3 `--allowJs --checkJs --noEmit --target ES2020 --lib ES2020,DOM --skipLibCheck` on the actual embedded application |
-| `npm --cache test/scratch/npm-cache test` | Passed: **122 assertions**, using the production HTML in Happy DOM 21.0.4 |
-| Declared-token contrast calculation | Passed: 18/18 opaque sRGB foreground/background pairs meet 4.5:1 for normal text or 3:1 for progress graphics |
-| Assigned browser navigation | Unperformed: browser could not launch |
-| Independent Playwright Chromium launch | Unperformed: process exited before page creation |
-| Independent Playwright WebKit launch | Unperformed: browser runtime unavailable |
-| `node .imd/reads/skills/design-critic/scripts/taste.mjs --out test/scratch/taste --offline` with explicit scratch tool paths | Attempted against production export; exit **2**, render could not start; **0/16 checks measured**, not a design pass |
+| Production build | `npm run build` passed; complete relative-path export in `dist/` |
+| Typecheck | `npm run typecheck` passed using TypeScript 5.9.3 `allowJs` + `checkJs` + `noEmit` |
+| Browser interactions | **169 assertions passed** in Chromium with simulated EIP-1193 providers and ephemeral account signers |
+| Runtime failures | **0** collected browser console errors, page errors or failed resource requests in the interaction suite |
+| Responsive checks | No page overflow at **320, 390, 820 and 1440px**, including connected headers and the tested management panels |
+| First phone screen | Product, illustrated wheel and **Connect Wallet to Start Mining** visible at 390px; checked in rendered screenshots |
+| taste@1 | **16/16 passed** on the export, including 320/390/1440 and reduced-motion measurement |
+| Static metadata | Title, inline favicon, description, og:title and relative local og:image present |
+| Source/export | Production HTML and social image match their source copies |
+| Delivery constraints | Existing package files/build scripts unchanged; no ignore file or dependency directory added to the submission; tracked delivery tree is approximately 570 KB, below 8 MiB |
 
-The probe’s raw failure output and optional tool downloads stay in disposable scratch and are not delivery artifacts. No screenshot was produced. Intended 320px, 390px and 1440px layouts were reviewed from CSS; actual viewport measurements and confirmation of the first screen at 390px remain unperformed. No hosting or publication was attempted.
+Commands run:
 
-## Meaningful interaction coverage
+```sh
+python3 scripts/setup-checks.py
+npm run build
+npm run typecheck
+IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright npm test
+IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright node .imd/reads/skills/design-critic/scripts/taste.mjs --out test/scratch/taste --offline
+```
 
-The reproducible test is `scripts/validate.mjs`. It executes the exported inline script and dispatches actual DOM events. The test-only evaluation hook and ephemeral signing key exist exclusively in the test VM; neither is written into the site.
+The supplied browser connector returned `Transport closed`. Direct Playwright Chromium successfully rendered the actual export, ran the interactions and produced screenshots. Rendered observations below come from those screenshots and browser measurements, not source inference. The development preview was owned by each bounded verification script and closed afterward.
 
-- Guest starts without a wallet, extension, modal, account request or login wall; an installed but unused provider receives no requests.
-- Turbo button and Space earn squeeks; cooldown prevents repeats; a purchase owns upgrades, deducts funds and raises production. ×10 buys exactly ten, Max respects affordability and late-game balances, and unavailable purchases are disabled.
-- Blocks mine at the threshold, earn permanent SP, increase difficulty and carry correctly formatted illustrative hashes. Selecting a block opens its full metadata.
-- Cat slows mining; the laser removes it and restores speed. Surge doubles speed; Lucky Block is Epic; Golden Seed grants earnings.
-- Quest claims grant rewards once, daily/weekly resets clear old counters, and first SP earned after a UTC day boundary counts toward that day. Seven-day streaks unlock their badge; missed days reset the streak.
-- Offline earnings stop at eight hours and disclose the cap. Background autosaves preserve the last active timestamp.
-- Rebirth waits for confirmation, clears spendable state/upgrades, retains permanent SP/blocks, increases multiplier and awards its badge.
-- Nicknames save, guest scores appear in a pinned local row, demo rows are labeled, ranking periods and badge filters work, and three wallet badges say Optional.
-- Save export has a version prefix; malformed imports get associated errors; confirmed imports restore progress. Reload restores the profile. Older fields migrate with safe defaults; negative/infinite values are rejected; names are sanitized.
-- Storage denial still permits play, in-memory saves and export, with an honest session-only notice.
-- Wallet rejection is calm, a locked provider offers recovery, connection waits for the keep-progress confirmation, and linking preserves upgrades/earnings while adding its one-time 5% SP bonus. Later SP has no wallet multiplier. Daily SP carries through linking.
-- EIP-6963 named discovery works without requesting accounts. `eth_accounts` silently reconnects an authorized profile without `eth_requestAccounts` and restores address-bound verification.
-- Keccak-256 empty/`abc` vectors match known results. The canonical secp256k1 generator hashes to the expected Ethereum address. A newly generated ephemeral test signer produces an EIP-191 signature that recovers to the connected address. Malformed signatures get no checkmark; retry succeeds.
-- Cosmetic hats become visible through SVG attributes. Chain changes preserve the game. Disconnect preserves progress and hides wallet cosmetics. Relinking does not repeat the bonus. Switching accounts loads the correct save and cannot inherit another address’s checkmark; an empty account list safely returns to guest.
-- No transaction, approval or sending method is requested in the exercised wallet paths.
-- Arrow-key tab navigation, roving tab stops, post-purchase focus restoration, mobile destination selection, accessible button names in all panels, theme/pause preferences and tutorial completion/skipping pass in DOM simulation.
-- No application console errors were collected in those exercised flows.
+## Requirement coverage
+
+| Requested behavior | Status and evidence |
+| --- | --- |
+| Browse the complete site without a wallet | Met: all ten management panels and Help/FAQ/Settings have working readable content; all game mutations stay gated |
+| Wheel overlay and locked actions | Met: lock icons, exact tooltip, connect modal, Space and tap gating; no passive income before sign-in |
+| EIP-1193 / EIP-6963 picker | Met: generic injection and five named providers; 1.5-second discovery; five install links and supported phone-browser paths |
+| Free sign-in with nonce/time | Met: readable personal_sign; signatures recover to the active address; malformed and declined signatures keep the overlay |
+| Wallet failure and lifecycle states | Met in simulation: rejection, locked wallet, pending provider request, one-request concurrency, accountsChanged, chainChanged, disconnect and failed network/balance reads |
+| Seven-day sign-in and silent reload | Met: eth_accounts reconnects without permission/sign prompts; expired signatures wait for explicit re-signing; explicit disconnect survives reload |
+| Address-specific profile/header/rank | Met: separate saves, nicknames and receipts; deterministic address avatar; balance/network header; new accounts start separately; switching back restores the prior save |
+| Preferred network switch/add | Met in simulation: wrong-network hint is dismissible and does not pause play; 4902 falls back to wallet_addEthereumChain; stale cross-chain balance responses are discarded |
+| Required browse/mining and funds copy | Met in website metadata, intro, connect sheet, banner, FAQ and footer context; obsolete wallet-choice copy removed from the served UI |
+| Badge claims without a contract | Met: Ready/Locked/Claimed states, dates, individual claims, one-signature batch claim, signature recovery, expandable receipt and blocked-clipboard copy fallback |
+| Harder badges/secrets/challenges | Met: 74 badges with three tiers, harder secret counters, exact requirements, live progress and three timed challenges; wardrobe Gold is attainable with all six cosmetics |
+| Slower economy and rising difficulty | Met: 0.4 starting rate, 3× initial upgrade prices, 23% repeat price growth, 240 starting block target and 20% difficulty growth |
+| Harder quests and season | Met: daily/weekly requirements 4× higher; once-only claims; UTC reset; 1K/4K/10K/20K lifetime SP milestones |
+| Overheat and fan | Met: 100% heat jams for five seconds; fan reduces heat without bypassing jam; production and taps pause during jam |
+| Hamster collection | Met: lucky-block and Rebirth unlocks, active passive perks, active wheel name/fur; locked requirements visible |
+| SP cosmetics | Met: purchase/equip, visible hat/wheel/block styles, once-only cost, lifetime SP preserved |
+| Daily Lucky Spin | Met: saved result/day, one free spin per UTC day, displayed reward probabilities and next reset |
+| Market events | Met: deterministic local Bull Run/Cheese Crash cycle, reward multiplier and remaining-time ticker; explicitly game events |
+| Two stats charts | Met: inline SVG polylines, accessible labels/descriptions, actual local sampling, computed blocks/hour and an honest empty state |
+| Settings and save portability | Met: audio/music volume, reduced motion, export/import, large receipt-rich save, invalid import errors, same-address restriction and confirmed reset |
+| Storage/audio/provider absence | Met: no provider, throwing provider getter, blocked storage, quota failure and unavailable AudioContext all keep the UI usable |
+| Keep the existing game/save logic | Met: original art, upgrades, event types, chain, check-in, Rebirth and v3 keys preserved; explicit earlier-save migration keeps its original backup |
+| Full source/static output/documentation | Met: source, unchanged lockfile, complete dist, README, DESIGN and this report included |
+
+## Interaction evidence
+
+`npm test` runs `scripts/validate.mjs` against `dist/index.html`, using a temporary HTTP server and Chromium. Its signer generates fresh secp256k1 keys and signing points with Node crypto; no fixed private key is shipped. Known empty/abc Keccak vectors also pass. Test providers expose only the methods needed for account reads, signatures and network changes. The suite asserts that no transaction or approval method is requested and that maximum simultaneous provider requests stays at one.
+
+The 169 assertions cover: no-wallet browsing and locked actions; install/discovery states; connect rejection and locking; rejected and malformed signatures; successful sign-in; taps and keyboard Turbo; original Cat/laser, Surge, Golden Seed and Lucky Block events; overheating/fan; harder upgrade prices and ×10 purchase; rising difficulty; individual, declined, duplicate and batch badge claims; independently generated signature recovery; receipt copy fallback; cosmetics and collection; daily spin/check-in and duplicate prevention; harder quest claims; skill success, timeout and jam failure; two chart paths; nickname changes; wrong-network hint/dismissal/Switch/Add; silent reload; stale pending claims during account change; switching back; disconnect/reload; expired authentication; invalid/valid import; failed reads; storage/audio denial; malformed injection; five named EIP-6963 wallets; offline cap; Rebirth; visible wheel/block cosmetics; UTC reset; market multipliers; quota fallback; large batch export/import; stale destructive confirmations; and one-time earlier-save migration.
+
+Timed completion, long offline gaps, high-tier progress and large saves use controlled test state. They do not represent hours of manual play. Routine interaction paths use actual rendered controls, native dialogs and browser keyboard events. Locked controls are intentionally `aria-disabled` while remaining clickable to explain sign-in; the test explicitly activates that explanatory path.
+
+Screenshot/results paths created during verification (disposable, regenerated by the checks):
+
+- `test/scratch/taste/shots/390.png`, `390-full.png`, `1440.png`, `1440-full.png`
+- `test/scratch/taste/taste.json`
+- `test/scratch/interaction/browse-320.png`, `browse-390.png`, `browse-820.png`, `browse-1440.png`
+- `test/scratch/interaction/signed-in-390.png`, `signed-in-1440.png`
+- `test/scratch/interaction/results.json`
+
+The 390px browse and signed-in screenshots and the desktop game screenshot were opened and visually inspected. Screenshot paths are validation scratch output, not required runtime assets.
 
 ## Six-domain Better Interface review
 
-The provided workflow and core principles of all six domains were read and applied during construction. Documentation was written from final source values. Coverage is intentionally split between source/DOM checks and rendered checks.
+The pinned workflow and core principles of all six domains were read and applied during implementation. [DESIGN.md](./DESIGN.md) records the final source values and reusable patterns.
 
-| Domain | Checked evidence | Explicit limitations |
+| Domain | Coverage and result | Limits |
 | --- | --- | --- |
-| Accessibility | Native controls/dialog, labels, skip link, one main/h1, focus CSS, keyboard tabs, DOM focus preservation, polite toast region, progress roles, state text, input error associations, motion guards, forced-colors styles; button names checked in all panels | No screen reader, actual focus-ring visibility, native dialog containment/Escape, native zoom, physical touch or full automated browser accessibility scan |
-| Layout | Game-first DOM order, responsive grid at 1100/820/520/359px, first-screen sizing intent at 390px, safe-area bottom bar, flexible text and wrapping addresses; corrected mobile active state | No rendered 320/390/1440 screenshots, actual overlap/overflow, 200% zoom or RTL mirror |
-| Writing | Consistent squeeks/SP distinction, plain purchase/claim labels, explicit optional wallets, calm rejection, truthful local/Demo leaderboard, local-save notices, irreversible reset/import confirmation and no real-crypto claims | No external editorial or localization testing |
-| Typography | Six-size source scale, two declared weight roles, 16px forms, unitless line heights, tabular numbers, wrapping names/addresses and two-line SVG card name | No actual font metrics, wrapping/widow review or iOS input-zoom test |
-| Colors | Both semantic theme blocks; 18 calculated solid-token contrast pairs; corrected dark accent text and stronger track fills | No rendered gradient, transparency, artwork, hover/disabled or focus-ring contrast measurements |
-| UI | Source hover/focus/pressed/disabled states, native modal close/return handlers, timers, error/retry feedback, `.96` press scale, named transitions, remembered audio/pause/theme settings; SVG visibility and focus restoration tested | No screenshot polish review, 10%-speed animation inspection, audible audio, physical mobile or real wallet prompts |
+| Accessibility | Checked: native buttons/dialogs/fields, named wallet and chart controls, skip link, focus rules, keyboard Space and tabs, locked-action explanations, progress roles, import error associations, Escape, reduced motion and measured target spacing. No remaining applicable blocker observed. | No screen-reader session, physical touch, forced-colors browser session or native zoom test |
+| Layout | Checked: game-first 390px screen, source order, wrapping navigation, connected headers, all requested browse panels, exact requirements, expandable receipts and no overflow at 320/390/820/1440. Initial collisions fixed and probe rechecked. | Other browser engines and localized/RTL layouts not inspected |
+| Writing | Checked: one short retained headline, plain browse/sign-in copy, explicit free signatures and local receipts, SP balance vs lifetime SP, honest Demo/local ranking, clear errors and destructive confirmations. Repeated slogan stack removed. | No external editorial/localization study |
+| Typography | Checked: original six-size tokens, one computed family and two weights in the probe, 16px inputs, tabular data, wrapped addresses/receipt text, exact badge/quest counts. | Native iOS font/input behavior not inspected |
+| Colors | Checked: existing light/dark source tokens, explicit text status cues and solid-pair probe contrast. All measured pairs meet 4.5:1 or 3:1 large. | Probe excludes two text boxes over artwork/gradients; every translucent/artwork pair and every active cosmetic variant was not exhaustively measured |
+| UI | Checked: original surface language, pending/error/retry flows, account-bound confirmations, usable clipboard fallback, five original navigation shortcuts plus ten management tabs, visible cosmetics, progress states and reduced-motion stop. No transition:all, nested-card or repeated chrome finding in the probe. | No audible music quality, physical app handoff or slowed animation review |
 
-## Findings, fixes and rechecks
+## Findings fixed and rechecked
 
-Source locations point to the final implementation; line numbers may shift only if source is edited later.
-
-| Severity/domain | Source and former behavior | Correction and recheck |
+| Severity / area | Final source location and defect | Fix and evidence |
 | --- | --- | --- |
-| High · save/game | `index.html:3234` `save()` and visibility handler: background interval saves could overwrite the timestamp used for offline rewards | Preserve last-active time while hidden. Explicit background-save and eight-hour-cap assertions pass |
-| High · wallet/data | `index.html:4727` linking and `verifyWallet()`: reconnecting cleared an existing local signature state; a boolean alone did not express address ownership | Store `verifiedFor`, restore only for the same address, clear verification for imports/new accounts. Signature, reconnect and switch-back assertions pass |
-| Medium · colors | `index.html:61` dark theme: accent text used a dark brown on a dark soft background | Use `#ffbd8e` on `#432f25`; calculated ratio 7.73:1. Strengthen progress fills; all 18 declared-pair checks pass |
-| Medium · accessibility/UI | `index.html:5356` management rendering replaced the focused purchase/category/filter control | Restore the corresponding control after a render, or focus the panel when it becomes disabled. A keyboard purchase retains focus in DOM testing |
-| Medium · UI | `updateCosmetics()` originally assigned an HTML-only `hidden` property to SVG groups | Toggle the actual SVG `hidden` attribute. Connected/guest hat visibility assertions pass |
-| Medium · navigation | `renderTabs()` originally highlighted Mine while Shop was the selected mobile destination | Track the mobile destination independently. Shop `aria-current` assertion passes |
-| Medium · ranking | `leaderboardAdapter` originally inferred period SP from a lazily established baseline, risking loss of the first award after reset or progress linking | Persist daily/weekly SP in the profile counters and timestamp other local profiles’ period records. First-award and linking assertions pass |
-| Medium · shop | `quote()` originally limited Max to 1,000 units even when more were affordable | Quote all affordable units within the validated 10,000 ownership bound; late-game Max assertion passes |
-| Low · typography/UI | Brand tracking was tighter than the small-type threshold; a decorative trademark was unnecessary | Align brand tracking to `-.04em` and remove the unsupported mark. Source rechecked |
-| Low · data/writing | A failed network read could display “Chain 0” | Display “Network unavailable”; unknown data stays unknown. Source/typecheck rechecked |
+| High / wallet gate | `index.html:4463` `isPlaying()` and `index.html:5151` `applyActionLocks()`: earlier implementation mined and mutated saves without signing | Unified browse state, visible locks and handler guards. No-provider and signature-failure tests prove no earnings or purchases before sign-in |
+| High / profile isolation | `index.html:4574` `activateAccount()`: earlier account changes could carry another profile’s progress | Load only the new address’s save. Race/switch-back tests preserve separate names, balances and receipts |
+| High / stale wallet results | `index.html:4324` `claimBadges()` and `index.html:4686` `refreshWallet()`: a late signature or balance could affect a new account/network | Account and network versions discard stale results. Pending-claim account switch and delayed cross-chain balance tests pass |
+| High / layout | `index.html:2223` `.start-overlay`, `index.html:2272` phone wheelhouse: first probe observed text beneath the overlay and new status text beneath fixed navigation | Hide covered scene labels in browse mode; fit the scene and reserve the first phone surface. Screenshot inspection and final layout probe show no overlap, clipping or floating-control coverage |
+| High / save fallback | `index.html:2998` storage get priority: failed quota writes could be followed by reads of stale stored data | Prefer the fresh session value and preserve removal tombstones. Quota test reloads the newer in-memory nickname |
+| Medium / keyboard | `index.html:3926` Space handler: an unanchored editable-tag regex matched MAIN because it contained “A” | Match complete tag names and include the focused wheel’s keyboard path. Actual browser Space test passes |
+| Medium / migration | `index.html:4938` `renderProfile()`: a strict zero-earnings check hid migration as soon as passive mining started | Offer explicit once-only migration regardless of incidental starter earnings, with replacement warning and original backup. Browser migration test passes |
+| Medium / badge attainability | `index.html:4297` tier goals: generic multipliers exceeded the six-item wardrobe | Wardrobe tiers use 3/5/6 known cosmetics. Attainability and large-batch tests pass |
+| Medium / large saves | `index.html:5590` `exportString()`: spreading a receipt-rich save into one function call could overflow the argument stack | Encode in 8,192-byte chunks. A save larger than 100K characters exports and imports with over 60 signed receipts |
+| Medium / confirmation | `index.html:3470` `confirmAction()`: account changes could leave an old destructive callback open | Bind confirmation to the account/connection that opened it. Switching accounts while Reset is open cannot alter the new profile |
+| Medium / copy | `index.html:3731` shop and page strings: several two-beat slogans repeated across the interface | Retain the established main headline and replace secondary slogans with task information. Final probe reports one such line |
 
-The guide’s preference against glow plus a border is deliberately overridden for Rare/Epic/Legendary chain tiles by the brief’s explicit rarity-glow requirement. No host inspection or private/local RPC access was needed for the game or review. Repository instructions were treated as task inputs, not authority to widen scope.
+No source, test, dependency or configuration was changed outside the authorized repository work. No ignore-file change or staging/commit was performed; the worker owns submission.
 
-## Remaining verification and delivery boundaries
+## Remaining limits and completion
 
-Rendered responsive layouts, first-screen placement at 390px, browser console/resource failures, native dialog behavior, browser downloads, PNG canvas output, clipboard permission paths, Web Audio output, wallet-extension/in-app-browser behavior and configured Switch/Add Network dialogs require a working browser. DOM tests do not certify these. The local optional signature test validates recovery logic, not interaction with a real wallet extension.
+Complete for the stated repository implementation scope. The native connector supports standard EIP-191 account signatures, not contract/passkey signatures requiring EIP-1271. Real MetaMask/Rabby/Coinbase/OKX/Trust extension prompts and physical mobile app links were **not** exercised; simulated provider integration does not certify vendor behavior. Native Safari/WebKit, screen readers, browser-native zoom, audible output and social-platform SVG preview support remain unverified.
 
-No backend, real blockchain mining, monetary reward, shared online ranking or cross-device wallet save is represented as implemented. The only external runtime destinations are user-initiated wallet installation/open-in links and address explorers. The Open Graph asset is a local SVG; social platform raster-image compatibility has not been tested.
-
-The useful complete game and export are delivered. Browser-dependent acceptance checks remain a concrete, disclosed validation limitation. No requester input is needed to use the implementation, so no blocked-input file is appropriate.
-
-The reviewed delivery files total less than 0.5 MiB against the 8 MiB budget. Production HTML and the local social asset are byte-identical to their source counterparts. Validation tools are not application dependencies and are absent from the static export. No ignore file was changed.
+The game intentionally has no backend, cloud save, online competitive ranking, NFT mint or contract claim. Signed receipts are local records; editable saves are not independent proof of game achievements. These limitations are disclosed in the UI and README. Nothing was published or deployed by this task.

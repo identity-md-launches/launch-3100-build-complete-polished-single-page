@@ -1,94 +1,101 @@
 # SqueekWheel design system
 
-## Product and visual idea
+## Overview
 
-SqueekWheel is a cozy idle mining game carried by one visual idea: a small illustrated hamster workshop above a navy chain of earned blocks. Warm orange identifies the main Turbo action; cream surfaces keep the dense game controls approachable. The game appears directly below a short heading, with no marketing hero separating players from the wheel.
+SqueekWheel remains a cozy hamster workshop: cream surfaces, orange actions, a locally illustrated running wheel and a navy chain of earned blocks. The existing artwork, brand, grid and playful headline stay. The new start overlay makes the wallet requirement clear without hiding the shop, quests, badges or other read-only content.
 
-The implementation is `index.html`. CSS starts at line 30; the inline symbol library, hamster illustration and embedded application follow it. This document describes the implemented source. Browser rendering was unavailable; responsive behavior below is established from source, not screenshots.
+The canonical implementation is `index.html`. This inventory follows the final source and rendered Chromium screenshots. The six-domain review and its limits are in [VALIDATION.md](./VALIDATION.md).
 
 ## Colors
 
-All UI components use semantic custom properties from `:root` and `:root[data-theme="dark"]`. A single data attribute controls the theme. The initial choice follows `prefers-color-scheme`; explicit changes are remembered.
+Reuse semantic variables in `:root` and `:root[data-theme="dark"]`; there is one theme mechanism. The existing hex palette is retained.
 
-| Token | Light | Dark | Role |
+| Token | Light | Dark | Use |
 | --- | --- | --- | --- |
 | `--bg` | `#faf7f0` | `#1b1e27` | Page and input background |
-| `--surface` | `#fffefa` | `#242834` | Cards, dialogs, header utilities |
+| `--surface` | `#fffefa` | `#242834` | Cards, sheets and header controls |
 | `--soft` | `#f3efe6` | `#2e323e` | Neutral controls and tracks |
-| `--ink` | `#292d3b` | `#f8f2e7` | Primary text |
+| `--ink` | `#292d3b` | `#f8f2e7` | Main text |
 | `--muted` | `#706d66` | `#bcb7af` | Supporting text |
-| `--line` | `#e6e1d6` | `#41444e` | Structural dividers |
-| `--accent` | `#ff8b3d` | `#ff9c58` | Turbo and emphasized action fills |
-| `--accent-ink` | `#703309` | `#ffbd8e` | Accent text on soft surfaces |
-| `--accent-soft` | `#fff0dd` | `#432f25` | Accent control/category surfaces |
-| `--progress-fill` | `#b45c25` | `#ff9c58` | Progress fill with stronger contrast |
-| `--green` | `#347553` | `#9bd9ac` | Success/status text |
-| `--green-soft` | `#e9f3e8` | `#263c33` | Success/status background |
-| `--scene` | `#fff4df` | `#373027` | Wheelhouse scene |
-| `--scene-dot` | `#e6cfa4` | `#69513c` | Decorative scene pattern |
+| `--line` | `#e6e1d6` | `#41444e` | Dividers |
+| `--accent` | `#ff8b3d` | `#ff9c58` | Start and Turbo action fills |
+| `--accent-ink` | `#703309` | `#ffbd8e` | Accent text on its matching soft surface |
+| `--accent-soft` | `#fff0dd` | `#432f25` | Selected filters and purchase backgrounds |
+| `--progress-fill` | `#b45c25` | `#ff9c58` | Progress and chart strokes |
+| `--green` | `#347553` | `#9bd9ac` | Ready/success text |
+| `--green-soft` | `#e9f3e8` | `#263c33` | Success backgrounds |
+| `--scene` | `#fff4df` | `#373027` | Wheelhouse background |
+| `--scene-dot` | `#e6cfa4` | `#69513c` | Scene pattern |
 | `--focus` | `#3066b2` | `#8ebeff` | Keyboard focus ring |
-| `--danger` | `#a53c31` | `#ffb4a9` | Reset and cat/laser cues |
-| `--navy` | `#282f43` | inherited light token | Permanent chain surface |
-| `--navy-muted` | `#bfc7da` | inherited light token | Text on navy |
+| `--danger` | `#a53c31` | `#ffb4a9` | Destructive text and heat |
+| `--navy` | `#282f43` | same | Chain background |
+| `--navy-muted` | `#bfc7da` | same | Chain secondary text |
 
-The main orange button uses `#42240f` text. The mining track uses `#a64f1c` on `#dfcfaf`. Rare block tiles use green, Epic purple and Legendary gold, with explicit rarity labels. Glows are reserved for rare earned blocks, as requested. Original warm SVG fur and wheel colors remain consistent between themes; wallet cosmetics can change the wheel gradient to mint or violet.
+The primary orange fill uses `#42240f` text. Existing rarity colors remain text-labeled. Purchased cheese and circuit block backgrounds are `#554222` and `#244d47`. Breed fur and wheel palettes belong to the illustration; the UI keeps its established semantic colors. The start overlay composites 76% scene color over the illustration using `color-mix`; its button and text remain opaque.
 
-Measured **from declared opaque sRGB pairs**, body/surface contrast is 13.58:1 light and 13.20:1 dark; secondary text/surface is 5.11:1 and 7.37:1; accent text/soft accent is 8.66:1 and 7.73:1. Primary action contrast is 6.04:1. The progress token pairs are 4.07:1 and 6.18:1; the mining progress pair is 3.64:1. These are calculated source-token ratios, not measurements of rendered gradients or composited pixels.
+The final taste probe reports that all resolved solid-background text pairs in its inspected states meet 4.5:1, or 3:1 for large text. Two text boxes over images/gradients remain outside that automated measurement. This is not a claim about every artwork or translucent pixel.
 
 ## Typography
 
-The family is `ui-rounded, "Trebuchet MS", Arial, sans-serif`; no font files or CDNs are needed. Regular text uses weight 400 and emphasis uses 800. The six sizes are:
+Use `ui-rounded, "Trebuchet MS", Arial, sans-serif`, with regular 400 and emphasis 800. No font downloads are needed. The six-size source scale remains:
 
-| Token | Size | Use |
+| Token | Size | Role |
 | --- | --- | --- |
-| `--xs` | `.75rem` / 12px | Data labels, compact controls, captions |
-| `--sm` | `.875rem` / 14px | Shop titles, buttons, dialog copy |
-| `--body` | `1rem` / 16px | Body, forms, subordinate headings |
-| `--lg` | `1.25rem` / 20px | Card titles and key statistics |
-| `--xl` | `2rem` / 32px | Compact heading and modal reward |
-| `--display` | `2.75rem` / 44px | Desktop page heading |
+| `--xs` | 12px | Compact data, badge tiers, phone indicators |
+| `--sm` | 14px | Buttons, secondary copy and dialog text |
+| `--body` | 16px | Forms, body and subordinate headings |
+| `--lg` | 20px | Card headings and key statistics |
+| `--xl` | 32px | Phone headline and large modal values |
+| `--display` | 44px | Desktop headline |
 
-Headings use tight tracking within `-.05em` at display size; body tracking stays natural. The brand uses `-.04em`. Body line-height is 1.5, page heading 1.1, card heading 1.3 and dialog copy 1.65. Changing numbers use tabular numerals. Mobile form inputs remain 16px. Names and full addresses wrap rather than being clipped; short wallet/hash previews have accessible full-value destinations. Shared-card names wrap into two SVG lines when needed.
+Headings use tight tracking at display size; content uses natural spacing. Body line-height is 1.5, the main headline 1.1, and modal copy 1.65. Numeric counters use tabular numerals. Exact badge and quest requirements use localized whole numbers; the main currency counters abbreviate large values and expose their full values in titles. Addresses, receipt text and long names wrap. Receipt blocks use the regular family rather than adding a third prose face. Inputs remain 16px on phones.
 
-## Layout and responsive behavior
+## Layout
 
-The page wrapper is at most 1312px with 36px inline padding. At 1500px and wider it grows to 1400px. Main content uses a `1.45fr / 1fr` game/management grid with a 24px gap. The scene and chain share the left edge; the tabbed management panel occupies the right. The lower row contains check-in, season and compact profile cards.
+Reuse `.wrap`, `.workspace`, `.card`, `.between`, `.stack`, `.field`, `.progress` and `.btn`. The wrapper is at most 1312px, extending to 1400px above 1500px. The desktop game/management grid uses a 1.45fr / 1fr split with a 24px gap. Spacing follows the existing 4–36px steps, with 8–12px within controls and 18–24px between major groups.
 
-Spacing uses 4, 8, 12, 16, 20, 24, 26, 28, 32 and 36px according to component density. Main sections have 20–24px separation; related fields typically have 6–10px internal gaps. Text containers can grow. Only the illustration stage has an intentional fixed height.
-
-| Breakpoint | Source behavior |
+| Width | Implemented behavior |
 | --- | --- |
-| Above 1500px | Wider wrapper; 327px illustration stage |
-| At/below 1100px | 26px outer padding, narrower column ratio/gap, secondary header links hidden; lower row has two cards |
-| At/below 820px | Single column; 32px page heading; game/chain precede management; bottom quick navigation appears; footer has bottom-bar clearance |
-| At/below 520px | 16px outer padding; 67px header; only the two principal currencies stay in the top stat row; illustration is 253px high; management stays below the game; lower cards stack |
-| At/below 359px | 12px outer padding; smaller brand/controls; scene note hidden; header sound control moves to the existing settings flow |
+| Above 1100px | Wheel/chain left; management right; utility cards below |
+| 1100px and narrower | Outer padding reduces and secondary header links disappear |
+| 820px and narrower | Single column, 32px headline, bottom quick navigation, game first |
+| 520px and narrower | 16px outer padding; two principal currencies; 205px illustration stage; indicator text uses 12px; controls and wallet details wrap |
+| Below 359px | 12px outer padding and compact brand/utilities; sound remains available in Settings |
 
-The 390px design keeps the heading, currencies, wheel and Turbo control in the first viewport by reducing chrome and the illustration stage. This intended first-screen placement has **not** been confirmed in a rendered screenshot. The mobile wallet label retains “Connect Wallet (optional)”. Navigation and dialogs account for safe-area insets; wallet dialogs become bottom sheets under 520px. The general page never uses overflow hiding to conceal layout failures. Only the chain itself is a deliberately scrollable horizontal sequence.
+At phone widths the wheelhouse has a minimum height of `calc(100svh - 230px)` so new status controls and the fixed quick navigation occupy distinct space on the first screen. The connect action appears over the wheel above the fold. The main management tabs wrap into rows and all ten destinations remain visible. The bottom navigation retains its five existing shortcuts; the other destinations are in the management tabs.
 
-## Surfaces, shapes and components
+Chromium checks cover 320, 390, 820 and 1440px, including connected headers and every management surface at the tested widths. The pinned probe also checks 320/390/1440. The chain intentionally scrolls horizontally inside its own region; the page has no horizontal overflow in those checks. Receipt details expand in normal flow.
 
-- **Cards:** 24px radius; `0 8px 32px #30271809` shadow in light and `0 8px 32px #00000016` in dark. Lower utility cards use a structural border and no shadow. The wheelhouse uses its scene fill rather than an extra shadow.
-- **Buttons:** `.btn` has a 44px minimum height and 12px radius. `.turbo-btn` is the primary 49px action, reduced to 46px on phones, with a cooldown fill and a text countdown. Compact secondary controls are at least 24px tall and separated. Disabled purchases retain their cost and clear inactive appearance.
-- **Management tabs:** `.tabs` / `.tab` use native buttons, selected underline, icon and text. Arrow keys, Home and End navigate a roving tab stop. Five panels share `#panel-content`. Re-rendering restores focus to the corresponding control or the panel.
-- **Shop:** a segmented category picker, quantity controls, and four upgrade rows per category. Each row aligns icon, title, production preview, owned count and purchase cost. ×10 is a batch purchase; Max quotes every affordable item within the validated ownership bound.
-- **Progress:** a 7px rounded track; 5px and 4px variants support quests and badges. Labels and numeric values accompany progress. The block bar has a progressbar role with current value.
-- **Avatars:** inline deterministic hamster SVGs. Guest identity is stable; linked wallets use the address seed. Cosmetics alter only the game illustration.
-- **Blocks:** 105px tiles with number, short hash and rarity. The newest five are visible in the chain; clicking a tile reveals the full illustrative hash, timestamp and SP reward. Fifty recent block records are retained; lifetime counts remain permanent.
-- **Dialogs:** native `<dialog>`, 25px radius, 28px padding, at most 460px wide and 85dvh tall. The dim backdrop has 5px blur. There is a named close control and focus return. Destructive confirmations repeat the action consequence.
-- **Notifications:** stable polite live region, explicit icon, text and dismiss control. Routine messages expire after 5.5 seconds; actionable errors persist. Toasts clear the mobile bottom navigation.
-- **Profile/leaderboard/badges:** wrapping identities, clearly marked Demo rows, a pinned player row, text rarity/unlock dates, progress and category buttons with `aria-pressed` state.
+## Elevation & Depth
 
-## Motion and accessibility
+Cards use the existing `--shadow` (`0 8px 32px #30271809`, dark `#00000016`). Lower utility cards use a divider border without shadow. The wheel uses its warm scene fill; the start prompt overlays only the illustration stage, leaving the rest of the page browsable. Native `<dialog>` sheets use a dim blurred backdrop and contain their own scroll. Toasts sit above the page and clear the fixed phone navigation.
 
-Interactive transitions target explicit properties at 140ms; pressing a button scales it to `.96`. CSS bobbing, wheel rotation, particles and confetti all stop for reduced motion or the remembered animation pause preference. Numbers and mining progress remain readable without animation. Theme changes temporarily suppress transitions. Sounds use Web Audio and begin muted; no audio files are downloaded.
+Rare block glows remain a deliberate part of the existing game’s rarity language. The probe reports no structural border-plus-shadow surface or nested-card finding in the reviewed page.
 
-Native links, buttons, forms, details and dialog provide semantics. A skip link precedes the header. Focus uses a 3px ring with 4px offset; navy-chain controls use a pale gold ring and toast controls use the contrasting background token. Forced-colors overrides preserve visible control boundaries. Optional features never gate the game, and wallet/network errors include a guest-safe recovery message.
+## Shapes
 
-Screen-reader navigation, native focus trapping/return, 200% zoom, rendered reflow, real reduced-motion output and physical touch have not been verified. DOM tests establish event behavior and labels, not those rendered qualities.
+Keep 24px main card corners, 12px standard buttons and fields, 10px purchase buttons, rounded progress tracks and the circular wheel. Native dialogs retain their 25px corners. The large connect action has a 52px minimum height and wraps rather than clipping its label. Standard `.btn` targets are at least 44px; compact controls preserve the project’s denser layout and meet the measured 24px target/spacing baseline.
 
-## Extending the page
+## Components
 
-Use the existing `.wrap`, `.card`, `.panel-heading`, `.between`, `.stack`, `.btn`, `.field` and `.progress` primitives. Start a new management feature as a panel, with a plain task heading and one main action. Keep normal text on `--ink`/`--muted`, reserve `--accent-ink` for its matching soft surfaces, and use `--progress-fill` for tracks. Reuse the `icon()` SVG symbols and deterministic `avatar()` function. Add keyboard state and reduced-motion handling alongside any new behavior. Keep gameplay available before, during and after optional wallet actions.
+- **Start overlay / action gate:** `#start-overlay`, `.start-overlay`, `applyActionLocks()`, `requirePlay()`. Before sign-in, actions show a local lock SVG, `aria-disabled`, a matching tooltip and a connect-modal handler. They remain keyboard reachable. Gameplay functions independently enforce sign-in. The decorative scene text is hidden under the browse overlay to prevent collisions.
+- **Wallet sheet and header:** `connectModal()`, `renderWalletList()`, `renderWalletButton()`. Local vector wallet marks, named EIP-6963 rows, 1.5-second discovery, install/app links, a free-signature explanation, pending labels and calm inline errors. Connected, the header shows an address-seeded avatar, short address, balance and network. Full address and disconnect are in Profile. Wrong-network hints have separate Switch/Add and Dismiss controls.
+- **Management navigation:** `TABS`, `renderTabs()`, `openTab()`. Ten native tab buttons with selected state, roving tabindex, arrow keys, Home and End. Panels retain focus when content is replaced. Mobile quick links scroll to the appropriate region.
+- **Badge and claims panels:** `renderBadges()`, `renderClaims()`. Bronze/Silver/Gold text, exact requirements, live numeric progress, Locked/Ready/Claimed actions, claim dates and expandable/copyable receipts. The copy fallback offers a selectable text area when clipboard access is blocked. Batch signing names every included badge.
+- **Game indicators:** `.game-indicators`, `renderGameStatus()`. Difficulty, active breed, heat with a progressbar, a labeled fan button, jam countdown and a stationary market ticker. Every status has text; color and motion are supplementary.
+- **Collection / cosmetics / spin:** `.feature-list`, `.feature-item`, `.spin-result`. Reuse simple divided rows, exact unlock/cost progress and native actions. Active/Equipped/Owned/Locked labels stay explicit. No nested decorative cards are added.
+- **Stats charts:** `.stat-chart`, `renderLineChart()`. Two inline SVG polylines with local samples, labeled axes, title/description and a numeric latest-value caption. Empty charts explain the two-sample requirement.
+- **Settings:** existing native dialog and fields, plus `.volume-field` ranges. Separate sound/music volume, reduced motion, export/import and confirmed reset. Destructive callbacks are bound to the account that opened the confirmation.
+- **Feedback and focus:** native dialogs support Escape, return focus and provide a named close button. Existing 3px focus outlines remain. Toasts use a stable polite live region and a dismiss control. Inline import errors use `aria-invalid` and `aria-describedby`.
 
-Guidance attribution and licenses: see [DESIGN-GUIDANCE-LICENSE.txt](./DESIGN-GUIDANCE-LICENSE.txt) and the README. This design inventory records actual source decisions; remaining verification gaps are tracked in [VALIDATION.md](./VALIDATION.md).
+Motion honors the device’s reduced-motion preference and the saved pause setting. Wheel rotation, hamster animation, particles and confetti stop; data and actions remain usable. Synthesized audio is off initially and waits for interaction. Its availability never gates the UI.
+
+## Do’s and Don’ts
+
+Start another game panel with the existing panel heading and feature rows. Keep requirements next to the controls they govern. Use the established six-size scale and semantic colors. Preserve the warm illustration and navy chain.
+
+Gate mutations through `requirePlay()` and the shared locked-action treatment. Keep content readable before sign-in, isolate address saves and reject stale wallet callbacks. Keep SP balance distinct from lifetime SP. Label local/Demo data honestly. Bundle art and icons locally, use native controls, wrap critical values, and preserve reduced motion.
+
+Do not add a second palette or font, turn a local score into an online claim, or introduce transaction/approval flows. Do not attach decorative labels above every heading or put informational content behind wallet access.
+
+Guidance notices and licenses remain in [DESIGN-GUIDANCE-LICENSE.txt](./DESIGN-GUIDANCE-LICENSE.txt).

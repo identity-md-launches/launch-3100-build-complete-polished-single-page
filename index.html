@@ -7,7 +7,7 @@
     <title>SqueekWheel — Hamster-Powered Mining</title>
     <meta
       name="description"
-      content="Small paws. Big blocks. Run your hamster-powered mining empire, collect squeeks, and build a chain. Free to play. No wallet needed."
+      content="Small paws. Big blocks. Run your hamster-powered mining empire, collect squeeks, and build a chain. Browse freely. Connect your wallet to start mining."
     />
     <meta property="og:title" content="SqueekWheel: Hamster-Powered Mining" />
     <meta
@@ -20,7 +20,7 @@
     <meta name="twitter:title" content="SqueekWheel: Hamster-Powered Mining" />
     <meta
       name="twitter:description"
-      content="A tiny hamster. A very big mining ambition. Play free, with no wallet."
+      content="A tiny hamster. A very big mining ambition. Browse freely. Connect your wallet to start mining."
     />
     <meta name="twitter:image" content="./social-card.svg" />
     <link
@@ -2216,6 +2216,73 @@
           outline: 3px solid Highlight;
         }
       }
+
+      .wheelhouse { position: relative; }
+      .scene-stage { position: relative; }
+      .tap-wheel { position:absolute; inset:25px 18% 30px; z-index:1; border:0; border-radius:50%; background:transparent; cursor:pointer; }
+      .start-overlay { position:absolute; inset:0; z-index:3; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; padding:20px; background:color-mix(in srgb, var(--scene) 76%, transparent); text-align:center; }
+      .start-overlay[hidden] { display:none; }
+      [data-playing="false"] .scene-note { visibility:hidden; }
+      [data-playing="false"] .sps-callout, [data-playing="false"] .hamster-name { visibility:hidden; }
+      .start-overlay .btn { max-width:100%; min-height:52px; white-space:normal; font-size:var(--body); }
+      .start-overlay p { max-width:30ch; font-size:var(--sm); color:var(--ink); }
+      .start-overlay > .icon { width:32px; height:32px; color:var(--accent-ink); }
+      .game-indicators { padding:0 24px 18px; display:grid; gap:10px; }
+      .indicator-row { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:var(--sm); }
+      .heat-track { background:var(--soft); }
+      .heat-track span { background:var(--danger); }
+      .market-ticker { font-size:var(--sm); color:var(--ink); padding:10px 0 0; }
+      .tabs { flex-wrap:wrap; }
+      .tab { flex:1 0 auto; min-height:44px; }
+      .wallet-meta { display:block; font-size:var(--xs); font-weight:400; white-space:normal; }
+      .wallet-btn { white-space:normal; }
+      .wallet-btn .avatar { width:28px; height:28px; flex-shrink:0; }
+      [data-wallet-locked] { cursor:pointer; opacity:1; }
+      [data-wallet-locked] .lock-mark { width:14px; height:14px; flex-shrink:0; }
+      .badge-item .btn { margin-top:10px; width:100%; }
+      .badge-item h3 { overflow-wrap:anywhere; }
+      .badge-tier { color:var(--accent-ink); font-size:var(--xs); }
+      .badge-item p { overflow-wrap:anywhere; }
+      .feature-list { display:grid; gap:0; }
+      .feature-item { padding:16px 0; border-bottom:1px solid var(--line); }
+      .feature-item:last-child { border:0; }
+      .feature-item p { color:var(--muted); font-size:var(--sm); margin:5px 0 10px; }
+      .feature-item .between { flex-wrap:wrap; gap:10px; }
+      .feature-item h3 { font-size:var(--body); }
+      .receipt-details { overflow-wrap:anywhere; font-size:var(--sm); }
+      .receipt-details pre { white-space:pre-wrap; overflow-wrap:anywhere; font-family:inherit; font-size:var(--xs); background:var(--soft); padding:12px; border-radius:12px; }
+      .stat-chart { display:block; width:100%; height:auto; color:var(--accent-ink); margin:12px 0 20px; }
+      .stat-chart text { font-family:inherit; font-size:12px; fill:var(--muted); }
+      .stat-chart .chart-grid { stroke:var(--line); stroke-width:1; }
+      .stat-chart polyline { fill:none; stroke:var(--progress-fill); stroke-width:2.5; stroke-linejoin:round; }
+      .mining-labels { flex-wrap:wrap; }
+      .milestone-top strong { overflow-wrap:anywhere; min-width:0; }
+      .volume-field { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:14px 0; font-size:var(--sm); }
+      .volume-field input { width:50%; min-height:44px; accent-color:var(--accent-ink); }
+      .spin-result { padding:18px 0; text-align:center; font-size:var(--lg); font-weight:800; }
+      .network-hint { margin:0 0 16px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+      .network-hint[hidden] { display:none; }
+      .network-hint p { flex:1 1 180px; font-size:var(--sm); }
+      .block-tile strong { overflow-wrap:anywhere; max-width:100%; }
+      .block-tile[data-skin="cheese"] { background:#554222; }
+      .block-tile[data-skin="circuit"] { background:#244d47; }
+      .dialog { overscroll-behavior:contain; }
+      .badge-grid { align-items:stretch; }
+      @media(max-width:520px) {
+        .wheelhouse { min-height:calc(100svh - 230px); }
+        .scene-stage { height:205px; }
+        .game-indicators { padding:0 18px 14px; gap:8px; }
+        .indicator-row { font-size:var(--xs); gap:5px; }
+        .market-ticker { font-size:var(--xs); padding-top:0; }
+        .start-overlay { padding:16px; gap:8px; }
+        .start-overlay .btn { font-size:var(--sm); }
+        .wallet-btn { max-width:172px; padding:8px 10px; }
+        .wallet-meta { font-size:var(--xs); }
+        .wallet-btn .avatar { width:24px; height:24px; }
+        .header-right { gap:7px; }
+        .tab { padding-inline:10px; }
+        .feature-item .btn { white-space:normal; }
+      }
     </style>
   </head>
   <body>
@@ -2411,11 +2478,9 @@
           ><button class="btn wallet-btn" id="wallet-button">
             <span id="wallet-icon"></span
             ><span class="desktop-wallet-label"
-              >Connect Wallet
-              <span style="font-weight: 400">(optional)</span></span
+              >Connect Wallet</span
             ><span class="mobile-wallet-label"
-              >Connect Wallet
-              <span style="font-weight: 400">(optional)</span></span
+              >Connect Wallet</span
             >
           </button>
         </div>
@@ -2425,16 +2490,17 @@
       <div class="intro">
         <div>
           <h1>Small paws. Big blocks.</h1>
-          <p>Your cozy little hamster-powered mining empire.</p>
+          <p>Browse freely. Connect your wallet to start mining.</p>
         </div>
         <div class="season-intro">
           <div class="season-icon" id="season-heading-icon"></div>
           <div>
             <strong>Season 1: Cheddar Season</strong>
-            <p>A little hustle. A lot of cheddar.</p>
+            <p>Earn lifetime SP to reach every milestone.</p>
           </div>
         </div>
       </div>
+      <div id="network-hint" class="notice network-hint" hidden></div>
       <section class="stats" aria-label="Mining statistics">
         <div class="stat">
           <div class="stat-icon" id="stat-seed-icon"></div>
@@ -2451,7 +2517,7 @@
           <div class="stat-icon" id="stat-star-icon"></div>
           <div>
             <div class="stat-label">
-              Squeek Points <span class="muted">· lifetime</span>
+              Squeek Points <span class="muted">· balance</span>
             </div>
             <div class="stat-value number">
               <span id="sp">0</span><span class="unit">SP</span>
@@ -2696,6 +2762,12 @@
                   <path d="m133 90 2-5 1 5 5 1-5 2-1 5-2-5-5-2Z" />
                 </g>
               </svg>
+              <button class="tap-wheel" id="tap-wheel" aria-label="Tap the hamster wheel for squeeks"></button>
+              <div class="start-overlay" id="start-overlay">
+                <span id="start-lock"></span>
+                <button class="btn primary" data-action="connect" id="start-mining">Connect Wallet to Start Mining</button>
+                <p id="start-message">Sign in with one free signature.</p>
+              </div>
               <div class="sps-callout">
                 <strong class="number" id="sps">1.0</strong
                 ><small>squeeks / sec</small>
@@ -2737,7 +2809,7 @@
                   >
                 </button>
                 <div class="turbo-help">
-                  Tap or press <span class="kbd">Space</span><br /><span
+                  Tap the wheel<br /><span
                     id="turbo-hint"
                     >+15 squeeks · 3s cooldown</span
                   >
@@ -2750,6 +2822,12 @@
                 </div>
                 <div class="progress"><span id="event-fill"></span></div>
               </div>
+            </div>
+            <div class="game-indicators">
+              <div class="indicator-row"><span id="difficulty-label">Network difficulty · 1.00×</span><span id="breed-label">Cheddar · starter breed</span></div>
+              <div class="indicator-row"><span id="heat-label">Wheel heat · 0%</span><button class="btn small-btn outline" id="fan" title="Cool the wheel by 35%">Cool with fan</button></div>
+              <div class="progress heat-track" id="heat-progress" role="progressbar" aria-label="Wheel heat" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
+              <p class="market-ticker" id="market-ticker"></p>
             </div>
           </section>
           <section class="chain-card" id="chain" aria-labelledby="chain-title">
@@ -2787,13 +2865,12 @@
           <div class="wallet-banner" id="wallet-banner">
             <span id="banner-icon"></span>
             <p>
-              Optional: connect a wallet for a verified profile and cosmetics.
-              You can keep playing without one.
+              SqueekWheel only reads your address. It never moves your funds.
             </p>
             <button
               class="icon-btn"
               id="dismiss-banner"
-              aria-label="Dismiss optional wallet message"
+              aria-label="Dismiss wallet information"
             ></button>
           </div>
         </section>
@@ -2804,7 +2881,7 @@
             <h2>A little daily cheddar</h2>
             <span class="pill orange" id="streak-label">Day 1</span>
           </div>
-          <p>Show up. Squeek on. Keep the streak going.</p>
+          <p>Check in daily to grow your streak.</p>
           <div class="checkin-days" id="checkin-days"></div>
           <div class="between">
             <span class="small muted" id="checkin-reward"
@@ -2823,11 +2900,11 @@
           <div class="season-progress">
             <div class="between milestone-top">
               <strong id="season-sp">0 SP</strong
-              ><span class="muted">5,000 SP to the big cheese</span>
+              ><span class="muted">20,000 lifetime SP to the big cheese</span>
             </div>
             <div class="progress"><span id="season-fill"></span></div>
             <div class="milestones" id="milestones">
-              <span>250</span><span>1K</span><span>2.5K</span><span>5K SP</span>
+              <span>1K</span><span>4K</span><span>10K</span><span>20K SP</span>
             </div>
           </div>
         </div>
@@ -2893,20 +2970,20 @@
     </dialog>
     <script>
       "use strict";
-      // CHAIN_CONFIG: optional owner configuration. Empty values intentionally mean any network.
-      // Set all five fields together to enable Switch/Add Network. This game needs no RPC.
+      // Preferred display network only; signing and gameplay work on any network.
+      // No RPC is used by the game; these public details support wallet Add Network.
       const CHAIN_CONFIG = Object.freeze({
-        name: "",
-        chainId: "",
-        rpcUrl: "",
-        symbol: "",
-        explorer: "",
+        name: "Ethereum",
+        chainId: "0x1",
+        rpcUrl: "https://ethereum-rpc.publicnode.com",
+        symbol: "ETH",
+        explorer: "https://etherscan.io",
       });
       // ====================================================================
       // State — versioned saves, validation, migration and in-memory fallback
       // ====================================================================
       /** @typedef {{number:number,hash:string,time:number,rarity:string,sp:number}} MinedBlock */
-      /** @typedef {{id:string,name:string,joined:number,squeeks:number,totalSqueeks:number,sp:number,xp:number,progress:number,blocks:number,runBlocks:number,chain:MinedBlock[],owned:Record<string,number>,boosts:number,upgrades:number,playtime:number,bestSps:number,prestige:number,rebirths:number,badges:Record<string,number>,claims:Record<string,boolean>,daily:{key:string,squeeks:number,blocks:number,boosts:number,upgrades:number,sp:number},weekly:{key:string,squeeks:number,blocks:number,boosts:number,upgrades:number,sp:number},checkin:{last:string,streak:number,total:number},lastSaved:number,tutorial:boolean,bannerDismissed:boolean,walletBonus:boolean,verified:boolean,verifiedFor:string,hat:string,wheelColor:string,catScares:number,events:number,cosmeticsUsed:boolean,seasonClaims:Record<string,boolean>}} GameState */
+      /** @typedef {{id:string,name:string,joined:number,squeeks:number,totalSqueeks:number,sp:number,xp:number,progress:number,blocks:number,runBlocks:number,chain:MinedBlock[],owned:Record<string,number>,boosts:number,upgrades:number,playtime:number,bestSps:number,prestige:number,rebirths:number,badges:Record<string,number>,claims:Record<string,boolean>,daily:{key:string,squeeks:number,blocks:number,boosts:number,upgrades:number,sp:number},weekly:{key:string,squeeks:number,blocks:number,boosts:number,upgrades:number,sp:number},checkin:{last:string,streak:number,total:number},lastSaved:number,tutorial:boolean,bannerDismissed:boolean,walletBonus:boolean,verified:boolean,verifiedFor:string,hat:string,wheelColor:string,catScares:number,events:number,cosmeticsUsed:boolean,seasonClaims:Record<string,boolean>,earnedSP:number,badgeReceipts:Record<string,any>,heat:number,jamUntil:number,jams:number,taps:number,fanUses:number,luckyBlocks:number,breed:string,cosmeticInventory:Record<string,boolean>,blockSkin:string,spinDay:string,spinResult:string,challengeWins:Record<string,number>,nightBlocks:number,earlyBlocks:number,samples:{time:number,sps:number,blocks:number}[]}} GameState */
       const VERSION = 3,
         SAVE_KEY = "squeekwheel:v3:",
         META_KEY = "squeekwheel:identity";
@@ -2917,7 +2994,8 @@
       const storage = {
         get(key) {
           try {
-            return localStorage.getItem(key) ?? memory.get(key) ?? null;
+            const stored=localStorage.getItem(key);
+            return memory.has(key) ? memory.get(key) : stored;
           } catch {
             storageAvailable = false;
             return memory.get(key) ?? null;
@@ -2932,7 +3010,7 @@
           }
         },
         remove(key) {
-          memory.delete(key);
+          memory.set(key,null);
           try {
             localStorage.removeItem(key);
           } catch {
@@ -2947,9 +3025,10 @@
           return fallback;
         }
       }
-      const uid = () =>
-        globalThis.crypto?.randomUUID?.() ??
-        "g" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+      function uid() {
+        try { if(globalThis.crypto?.randomUUID)return globalThis.crypto.randomUUID(); } catch { /* Local fallback for restricted browser contexts. */ }
+        return "g"+Date.now().toString(36)+Math.random().toString(36).slice(2,14);
+      }
       const dayKey = (time = Date.now()) =>
         new Date(time).toISOString().slice(0, 10);
       const weekKey = (time = Date.now()) => {
@@ -3006,7 +3085,7 @@
             : "",
         disconnected: identitySaved.disconnected === true,
       };
-      let activeKey = identity.guestId;
+      let activeKey = "browse";
       /** @returns {GameState} */
       function freshState(id = identity.guestId) {
         const n = hash(id);
@@ -3026,7 +3105,7 @@
           boosts: 0,
           upgrades: 0,
           playtime: 0,
-          bestSps: 1,
+          bestSps: 0.4,
           prestige: 1,
           rebirths: 0,
           badges: {},
@@ -3060,6 +3139,10 @@
           events: 0,
           cosmeticsUsed: false,
           seasonClaims: {},
+          earnedSP: 0, badgeReceipts: {}, heat: 0, jamUntil: 0, jams: 0,
+          taps: 0, fanUses: 0, luckyBlocks: 0, breed: "cheddar",
+          cosmeticInventory: {}, blockSkin: "classic", spinDay: "", spinResult: "",
+          challengeWins: {}, nightBlocks: 0, earlyBlocks: 0, samples: [],
         };
       }
       function finite(value, fallback = 0, max = 1e100) {
@@ -3071,7 +3154,7 @@
       function safeRecord(value, kind = "number") {
         const out = {};
         if (value && typeof value === "object" && !Array.isArray(value)) {
-          for (const [k, v] of Object.entries(value)) {
+          for (const [k, v] of Object.entries(value).slice(0,1000)) {
             if (
               /^[a-zA-Z0-9:_-]{1,100}$/.test(k) &&
               k !== "__proto__" &&
@@ -3183,13 +3266,40 @@
                   /^0x[\da-f]{16}$/.test(b.hash),
               )
               .map((b) => ({
-                number: Math.floor(finite(b.number)),
+                number: Math.floor(finite(b.number,0,1e9)),
                 hash: b.hash,
                 time: Math.min(finite(b.time, Date.now()), Date.now()),
                 rarity: b.rarity,
                 sp: finite(b.sp),
               }))
           : [];
+        s.earnedSP = Math.max(finite(raw.earnedSP, s.sp), s.sp);
+        for (const key of ["jams", "taps", "fanUses", "luckyBlocks", "nightBlocks", "earlyBlocks"])
+          s[key] = Math.floor(finite(raw[key], 0, 1e9));
+        s.heat = finite(raw.heat, 0, 100);
+        s.jamUntil = Math.min(finite(raw.jamUntil), Date.now() + 5000);
+        s.breed = ["cheddar", "silver", "fluff", "golden", "cosmic"].includes(raw.breed) ? raw.breed : "cheddar";
+        s.cosmeticInventory = safeRecord(raw.cosmeticInventory, "boolean");
+        // Preserve cosmetics already earned in an earlier save.
+        if (s.hat !== "none") s.cosmeticInventory[s.hat] = true;
+        if (s.wheelColor !== "orange") s.cosmeticInventory[s.wheelColor] = true;
+        s.blockSkin = ["classic", "cheese", "circuit"].includes(raw.blockSkin) ? raw.blockSkin : "classic";
+        if (s.blockSkin !== "classic") s.cosmeticInventory[s.blockSkin] = true;
+        s.spinDay = /^\d{4}-\d{2}-\d{2}$/.test(raw.spinDay) ? raw.spinDay : "";
+        s.spinResult = typeof raw.spinResult === "string" ? raw.spinResult.slice(0, 100) : "";
+        s.challengeWins = safeRecord(raw.challengeWins);
+        const receipts = raw.badgeReceipts;
+        if (receipts && typeof receipts === "object" && !Array.isArray(receipts)) {
+          for (const [id, r] of Object.entries(receipts).slice(0, 250)) {
+            if (/^[a-z0-9_]{1,80}$/.test(id) && r && typeof r === "object" && r.address === s.id &&
+                typeof r.message === "string" && r.message.length < 20000 &&
+                typeof r.signature === "string" && /^0x[\da-f]{130}$/i.test(r.signature) &&
+                Number.isFinite(r.time) && r.time > 0 && r.time <= Date.now()) {
+              s.badgeReceipts[id] = { address: r.address, message:r.message, signature:r.signature, time:r.time };
+            }
+          }
+        }
+        s.samples = Array.isArray(raw.samples) ? raw.samples.slice(-120).filter(x => x && Number.isFinite(x.time) && x.time > 0 && x.time <= Date.now() && Number.isFinite(x.sps) && x.sps >= 0 && Number.isFinite(x.blocks) && x.blocks >= 0).map(x => ({time:x.time, sps:Math.min(x.sps,1e100), blocks:Math.min(x.blocks,1e9)})) : [];
         s.runBlocks = Math.min(s.runBlocks, s.blocks);
         return s;
       }
@@ -3205,7 +3315,7 @@
         }
         return freshState(key);
       }
-      /** @type {GameState} */ let state = loadState(activeKey);
+      /** @type {GameState} */ let state = freshState("browse");
       let tab = "shop",
         mobileView = "mine",
         category = "Wheel",
@@ -3220,6 +3330,8 @@
             ? "dark"
             : "light",
         motionPaused = prefs.motionPaused === true;
+      let soundVolume = finite(prefs.soundVolume, 0.5, 1),
+        musicVolume = finite(prefs.musicVolume, 0, 1);
       const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
       let dirty = true,
         chainDirty = true,
@@ -3228,11 +3340,12 @@
       function savePreferences() {
         storage.set(
           "squeekwheel:preferences",
-          JSON.stringify({ muted, theme, motionPaused }),
+          JSON.stringify({ muted, theme, motionPaused, soundVolume, musicVolume }),
         );
       }
       function save() {
-        if (!document.hidden) state.lastSaved = Date.now();
+        if (!wallet.address || activeKey !== wallet.address) { updateSaveStatus(); return; }
+        if (!document.hidden && isPlaying()) state.lastSaved = Date.now();
         storage.set(
           SAVE_KEY + activeKey,
           JSON.stringify({ version: VERSION, state }),
@@ -3355,6 +3468,7 @@
         }
       });
       function confirmAction(title, description, label, action) {
+        const contextKey=activeKey, contextEpoch=wallet.requestId;
         modal(
           title,
           `<p>${description}</p><div class="dialog-actions"><button class="btn outline" id="confirm-cancel">Cancel</button><button class="btn primary" id="confirm-action">${escapeHtml(label)}</button></div>`,
@@ -3362,6 +3476,7 @@
         $("confirm-cancel").onclick = closeModal;
         $("confirm-action").onclick = () => {
           closeModal();
+          if(contextKey!==activeKey||contextEpoch!==wallet.requestId||!requirePlay()) { toast("Profile changed. Start this action again for the current account.","info"); return; }
           action();
         };
       }
@@ -3445,6 +3560,7 @@
       };
       $("sound-toggle").onclick = () => {
         muted = !muted;
+        try { if(muted && audio)void audio.suspend().catch(()=>{}); } catch { /* Audio may be unavailable. */ }
         applyPreferences();
         savePreferences();
         if (!muted) sound("boost");
@@ -3569,7 +3685,7 @@
       ];
       function baseSps() {
         return (
-          1 +
+          0.4 +
           UPGRADES.reduce(
             (total, u) => total + (state.owned[u.id] || 0) * u.sps,
             0,
@@ -3577,7 +3693,7 @@
         );
       }
       function price(upgrade, count = state.owned[upgrade.id] || 0) {
-        return Math.ceil(upgrade.cost * 1.16 ** count);
+        return Math.ceil(upgrade.cost * 3 * 1.23 ** count);
       }
       function quote(upgrade) {
         const owned = state.owned[upgrade.id] || 0;
@@ -3593,6 +3709,7 @@
         return { count, cost: count ? cost : price(upgrade) };
       }
       function buy(id) {
+        if (!requirePlay()) return;
         const u = UPGRADES.find((u) => u.id === id);
         if (!u) return;
         const q = quote(u);
@@ -3611,7 +3728,7 @@
         save();
       }
       function renderShop() {
-        return `<div class="panel-heading"><h2>A better kind of grind</h2><p>Little upgrades. Big squeek energy.</p></div><div class="segmented" aria-label="Upgrade category">${["Wheel", "Fuel", "Crew"].map((c) => `<button data-category="${c}" aria-pressed="${category === c}">${icon(c === "Wheel" ? "wheel" : c === "Fuel" ? "seed" : "crew")} ${c}</button>`).join("")}</div><div class="shop-toolbar"><span>Invest in your tiny empire</span><div class="quantity" aria-label="Purchase quantity">${["1", "10", "Max"].map((q) => `<button data-quantity="${q}" aria-pressed="${buyMode === q}">${q === "Max" ? "Max" : "×" + q}</button>`).join("")}</div></div><div id="upgrade-list">${UPGRADES.filter(
+        return `<div class="panel-heading"><h2>A better kind of grind</h2><p>Spend squeeks to increase mining speed.</p></div><div class="segmented" aria-label="Upgrade category">${["Wheel", "Fuel", "Crew"].map((c) => `<button data-category="${c}" aria-pressed="${category === c}">${icon(c === "Wheel" ? "wheel" : c === "Fuel" ? "seed" : "crew")} ${c}</button>`).join("")}</div><div class="shop-toolbar"><span>Invest in your tiny empire</span><div class="quantity" aria-label="Purchase quantity">${["1", "10", "Max"].map((q) => `<button data-quantity="${q}" aria-pressed="${buyMode === q}">${q === "Max" ? "Max" : "×" + q}</button>`).join("")}</div></div><div id="upgrade-list">${UPGRADES.filter(
           (u) => u.category === category,
         )
           .map((u) => {
@@ -3630,13 +3747,14 @@
           );
           if (!button) continue;
           const q = quote(u);
-          button.disabled = q.cost > state.squeeks || !q.count;
+          button.disabled = isPlaying() && (q.cost > state.squeeks || !q.count);
           button.setAttribute(
             "aria-label",
             `Buy ${q.count || 1} ${u.name} for ${fmt(q.cost)} squeeks`,
           );
           button.innerHTML = `<span>Buy ${buyMode === "1" ? "" : (q.count || 1) + "×"}</span><span class="buy-cost">${fmt(q.cost)} sq</span>`;
         }
+        applyActionLocks();
       }
       // ====================================================================
       // Game Loop — delta time, mining difficulty, events, XP and rebirth
@@ -3656,7 +3774,7 @@
         { name: "Legendary", bonus: 12 },
       ];
       function difficulty() {
-        return Math.round(60 * 1.13 ** Math.min(state.runBlocks, 1800));
+        return Math.round(240 * 1.20 ** Math.min(state.runBlocks, 1000));
       }
       function totalMultiplier() {
         return (
@@ -3669,13 +3787,13 @@
         );
       }
       function sps() {
-        return baseSps() * totalMultiplier();
+        return isPlaying() && Date.now() >= state.jamUntil ? baseSps() * totalMultiplier() * activeBreed().speed : 0;
       }
       function getLevel() {
-        return Math.min(50, Math.floor((state.xp / 80) ** (1 / 1.65)) + 1);
+        return Math.min(2000, Math.floor((state.xp / 100) ** (1 / 1.65)) + 1);
       }
       function levelThreshold(level) {
-        return Math.round(80 * (level - 1) ** 1.65);
+        return Math.round(100 * (level - 1) ** 1.65);
       }
       function levelTitle(level = getLevel()) {
         return level >= 50
@@ -3695,9 +3813,11 @@
         const granted = finite(amount);
         track("sp", granted);
         state.sp = Math.min(state.sp + granted, 1e100);
+        state.earnedSP = Math.min(state.earnedSP + granted, 1e100);
         dirty = true;
       }
       function mineBlock(forceRarity = null, quiet = false) {
+        if (!isPlaying()) return;
         const roll = Math.random();
         const rarity =
           forceRarity ||
@@ -3706,19 +3826,28 @@
         const bonus = RARITIES.find((r) => r.name === rarity).bonus;
         state.blocks++;
         state.runBlocks++;
+        if (!quiet) {
+          const hour = new Date().getHours();
+          if (hour >= 2 && hour < 4) state.nightBlocks++;
+          if (hour >= 5 && hour < 7) state.earlyBlocks++;
+        }
+        if (rarity === "Epic" || rarity === "Legendary") {
+          state.luckyBlocks++;
+          if (!quiet && [1,5].includes(state.luckyBlocks)) toast("A new hamster breed is ready in Collection.", "heart");
+        }
         track("blocks", 1);
         const reward = Math.round(
-          (20 + state.runBlocks * 2) * bonus * state.prestige,
+          (12 + state.runBlocks) * bonus * state.prestige * activeBreed().reward * (quiet ? 1 : marketEvent().multiplier),
         );
         addSP(reward);
         state.xp += 15 * bonus;
         const randomBytes = new Uint8Array(8);
-        if (globalThis.crypto?.getRandomValues)
+        try {
+          if(!globalThis.crypto?.getRandomValues)throw Error("Random source unavailable");
           crypto.getRandomValues(randomBytes);
-        else
-          randomBytes.forEach(
-            (_, i) => (randomBytes[i] = Math.floor(Math.random() * 256)),
-          );
+        } catch {
+          randomBytes.forEach((_,i)=>(randomBytes[i]=Math.floor(Math.random()*256)));
+        }
         const block = {
           number: state.blocks,
           hash:
@@ -3744,6 +3873,7 @@
         }
       }
       function earn(amount, quiet = false) {
+        if (!isPlaying()) return;
         amount = finite(amount);
         state.squeeks = Math.min(state.squeeks + amount, 1e100);
         state.totalSqueeks = Math.min(state.totalSqueeks + amount, 1e100);
@@ -3758,17 +3888,27 @@
         dirty = true;
       }
       function advance(seconds, offline = false) {
+        if (!isPlaying()) return;
         resetPeriods();
-        const rate = offline ? baseSps() * state.prestige : sps();
+        const rate = offline ? baseSps() * state.prestige * activeBreed().speed : sps();
         earn(rate * seconds, offline);
         if (!offline) state.playtime += seconds;
         state.bestSps = Math.max(state.bestSps, rate);
       }
       function turbo() {
+        if (!requirePlay()) return;
         const now = Date.now();
-        if (now < turboUntil) return;
+        if (now < turboUntil || now < state.jamUntil) return;
+        state.heat = Math.min(100, state.heat + 24);
+        if (state.heat >= 100) {
+          state.jamUntil = now + 5000;
+          state.jams++;
+          toast("Wheel jammed for 5 seconds. Use the fan to cool it.", "info");
+          dirty = true;
+          return;
+        }
         turboUntil = now + 3000;
-        const amount = Math.max(15, sps() * 8);
+        const amount = Math.max(6, sps() * 5);
         state.boosts++;
         track("boosts", 1);
         earn(amount);
@@ -3786,7 +3926,7 @@
           e.code === "Space" &&
           !e.repeat &&
           !$("dialog").open &&
-          !/INPUT|TEXTAREA|SELECT|BUTTON|SUMMARY|A/.test(el.tagName) &&
+          (!/^(INPUT|TEXTAREA|SELECT|BUTTON|SUMMARY|A)$/.test(el.tagName) || el.id === "tap-wheel") &&
           !el.isContentEditable
         ) {
           e.preventDefault();
@@ -3795,6 +3935,7 @@
       });
       const EVENT_TYPES = ["golden", "cat", "lucky", "surge"];
       function startEvent(type = EVENT_TYPES[Math.floor(Math.random() * 4)]) {
+        if (!isPlaying()) return;
         if (activeEvent) return;
         state.events++;
         if (type === "golden") {
@@ -3828,6 +3969,7 @@
         evaluateProgress();
       }
       $("laser").onclick = () => {
+        if (!requirePlay()) return;
         if (activeEvent?.type !== "cat") return;
         state.catScares++;
         activeEvent = null;
@@ -3838,6 +3980,8 @@
         evaluateProgress();
       };
       function evaluateProgress(quiet = false) {
+        if (!isPlaying()) return;
+        evaluateChallenge();
         const level = getLevel();
         if (level > lastLevel) {
           if (!quiet) {
@@ -3852,8 +3996,8 @@
           panelDirty = true;
         }
         checkBadges(quiet);
-        for (const threshold of [250, 1000, 2500, 5000]) {
-          if (state.sp >= threshold && !state.seasonClaims[threshold]) {
+        for (const threshold of [1000, 4000, 10000, 20000]) {
+          if (state.earnedSP >= threshold && !state.seasonClaims[threshold]) {
             state.seasonClaims[threshold] = true;
             state.xp += threshold * 0.15;
             if (!quiet) {
@@ -3869,6 +4013,7 @@
         }
       }
       function rebirth() {
+        if (!requirePlay()) return;
         if (state.runBlocks < 25) {
           toast(
             `Mine ${25 - state.runBlocks} more blocks this run to unlock rebirth.`,
@@ -3904,6 +4049,7 @@
         );
       }
       function welcomeBack() {
+        if (!isPlaying()) return;
         const away = Math.max(0, (Date.now() - state.lastSaved) / 1000);
         if (away < 60) return;
         const seconds = Math.min(away, 8 * 3600),
@@ -3917,7 +4063,7 @@
         save();
         modal(
           "Your hamster kept the wheel warm",
-          `<div class="dialog-art">${avatar(state.id)}</div><p>You were away for ${duration(away)}. Cheddar put in ${duration(seconds)} of honest work${away > 28800 ? " (the 8-hour offline cap)" : ""}.</p><div class="dialog-stat">+${fmt(state.squeeks - before)} squeeks</div><p style="text-align:center">${fmt(state.blocks - beforeBlocks)} blocks mined · +${fmt(state.sp - beforeSp)} SP<br>No wallet needed. Just a very dedicated hamster.</p><div class="dialog-actions"><button class="btn primary" id="welcome-continue">Keep the wheel turning</button></div>`,
+          `<div class="dialog-art">${avatar(state.id)}</div><p>You were away for ${duration(away)}. Cheddar put in ${duration(seconds)} of honest work${away > 28800 ? " (the 8-hour offline cap)" : ""}.</p><div class="dialog-stat">+${fmt(state.squeeks - before)} squeeks</div><p style="text-align:center">${fmt(state.blocks - beforeBlocks)} blocks mined · +${fmt(state.sp - beforeSp)} SP<br>Saved to this wallet on this device.</p><div class="dialog-actions"><button class="btn primary" id="welcome-continue">Keep the wheel turning</button></div>`,
         );
         $("welcome-continue").onclick = closeModal;
       }
@@ -3925,6 +4071,7 @@
         const dt = Math.max(0, (now - lastFrame) / 1000);
         lastFrame = now;
         if (!document.hidden) {
+          updateHeat(Math.min(dt, 30));
           if (dt > 2) {
             advance(Math.min(dt, 28800), true);
           } else advance(dt);
@@ -3936,7 +4083,8 @@
             dirty = true;
           }
           if (clock >= nextEventAt && !$("dialog").open) startEvent();
-          if (!reducedMotion.matches && !motionPaused) {
+          sampleStats();
+          if (isPlaying() && Date.now() >= state.jamUntil && !reducedMotion.matches && !motionPaused) {
             rotation = (rotation + dt * (28 + Math.min(200, sps() * 4))) % 360;
             $("wheel-spin").style.transform = `rotate(${rotation}deg)`;
           }
@@ -3968,69 +4116,70 @@
           name: "A helping paw",
           period: "daily",
           stat: "boosts",
-          goal: 12,
+          goal: 48,
           reward: 40,
-          description: "Give 12 Turbo boosts",
+          description: "Give 48 Turbo boosts",
         },
         {
           id: "squeeks",
           name: "Seed money",
           period: "daily",
           stat: "squeeks",
-          goal: 600,
+          goal: 2400,
           reward: 60,
-          description: "Earn 600 squeeks",
+          description: "Earn 2,400 squeeks",
         },
         {
           id: "blocks",
           name: "The first link",
           period: "daily",
           stat: "blocks",
-          goal: 5,
+          goal: 20,
           reward: 80,
-          description: "Mine 5 blocks",
+          description: "Mine 20 blocks",
         },
         {
           id: "upgrade",
           name: "Room for improvement",
           period: "daily",
           stat: "upgrades",
-          goal: 8,
+          goal: 32,
           reward: 70,
-          description: "Buy 8 upgrades",
+          description: "Buy 32 upgrades",
         },
         {
           id: "weekblocks",
           name: "Chain reaction",
           period: "weekly",
           stat: "blocks",
-          goal: 40,
+          goal: 160,
           reward: 400,
-          description: "Mine 40 blocks this week",
+          description: "Mine 160 blocks this week",
         },
         {
           id: "weeksqueeks",
           name: "A mountain of cheddar",
           period: "weekly",
           stat: "squeeks",
-          goal: 20000,
+          goal: 80000,
           reward: 600,
-          description: "Earn 20,000 squeeks this week",
+          description: "Earn 80,000 squeeks this week",
         },
         {
           id: "weekcrew",
           name: "Build the empire",
           period: "weekly",
           stat: "upgrades",
-          goal: 30,
+          goal: 120,
           reward: 350,
-          description: "Buy 30 upgrades this week",
+          description: "Buy 120 upgrades this week",
         },
       ];
       function questKey(q) {
         return q.period + ":" + state[q.period].key + ":" + q.id;
       }
       function claimQuest(id) {
+        if (!requirePlay()) return;
         resetPeriods();
         const q = QUESTS.find((q) => q.id === id);
         if (!q || state.claims[questKey(q)] || state[q.period][q.stat] < q.goal)
@@ -4069,13 +4218,14 @@
                   const amount = Math.min(state[q.period][q.stat], q.goal),
                     claimed = state.claims[questKey(q)],
                     ready = amount >= q.goal;
-                  return `<article class="quest"><div class="between"><h3>${q.name}</h3><span class="quest-reward">+${q.reward} SP</span></div><div class="between"><p>${q.description}</p><button class="btn small-btn ${ready && !claimed ? "primary" : "outline"}" data-claim="${q.id}" ${!ready || claimed ? "disabled" : ""}>${claimed ? "Claimed" : ready ? "Claim" : "In progress"}</button></div><div class="progress" role="progressbar" aria-label="${q.name}" aria-valuenow="${Math.floor(amount)}" aria-valuemin="0" aria-valuemax="${q.goal}"><span style="width:${(amount / q.goal) * 100}%"></span></div><p style="margin-top:5px">${fmt(amount)} / ${fmt(q.goal)}</p></article>`;
+                  return `<article class="quest"><div class="between"><h3>${q.name}</h3><span class="quest-reward">+${q.reward} SP</span></div><div class="between"><p>${q.description}</p><button class="btn small-btn ${ready && !claimed ? "primary" : "outline"}" data-claim="${q.id}" ${!ready || claimed ? "disabled" : ""}>${claimed ? "Claimed" : ready ? "Claim" : "In progress"}</button></div><div class="progress" role="progressbar" aria-label="${q.name}" aria-valuenow="${Math.floor(amount)}" aria-valuemin="0" aria-valuemax="${q.goal}"><span style="width:${(amount / q.goal) * 100}%"></span></div><p style="margin-top:5px">${exact(amount)} / ${exact(q.goal)}</p></article>`;
                 })
                 .join("")}`,
           )
-          .join("")}`;
+          .join("")}${renderChallenges()}`;
       }
       function checkin() {
+        if (!requirePlay()) return;
         if (state.checkin.last === dayKey()) return;
         const yesterday = dayKey(Date.now() - 86400000);
         state.checkin.streak =
@@ -4109,304 +4259,93 @@
           ? `${streak}-day streak. Nicely done.`
           : `Today’s treat: +${[25, 35, 50, 65, 80, 100, 150][current - 1]} SP`;
         $("checkin").textContent = today ? "Claimed today" : "Claim treat";
-        /** @type {HTMLButtonElement} */ ($("checkin")).disabled = today;
+        /** @type {HTMLButtonElement} */ ($("checkin")).disabled = isPlaying() && today;
+        applyActionLocks();
       }
       // ====================================================================
-      // Badges — local unlock dates, categories, rarities and optional extras
+      // Badges — tiered requirements, local dates and wallet-signed receipts
       // ====================================================================
-      const BADGES = [
-        {
-          id: "first",
-          name: "First Squeek",
-          category: "Mining",
-          rarity: "Common",
-          description: "Earn your first squeek.",
-          icon: "seed",
-          goal: 1,
-          value: () => state.totalSqueeks,
-        },
-        {
-          id: "block1",
-          name: "Block Party",
-          category: "Mining",
-          rarity: "Common",
-          description: "Mine your first block.",
-          icon: "block",
-          goal: 1,
-          value: () => state.blocks,
-        },
-        {
-          id: "block10",
-          name: "Chain Starter",
-          category: "Mining",
-          rarity: "Rare",
-          description: "Mine 10 blocks.",
-          icon: "block",
-          goal: 10,
-          value: () => state.blocks,
-        },
-        {
-          id: "block100",
-          name: "Chain Keeper",
-          category: "Mining",
-          rarity: "Epic",
-          description: "Mine 100 blocks.",
-          icon: "block",
-          goal: 100,
-          value: () => state.blocks,
-        },
-        {
-          id: "block500",
-          name: "Block Legend",
-          category: "Mining",
-          rarity: "Legendary",
-          description: "Mine 500 blocks.",
-          icon: "trophy",
-          goal: 500,
-          value: () => state.blocks,
-        },
-        {
-          id: "wealth1",
-          name: "Pocket Change",
-          category: "Wealth",
-          rarity: "Common",
-          description: "Earn 1,000 lifetime squeeks.",
-          icon: "seed",
-          goal: 1000,
-          value: () => state.totalSqueeks,
-        },
-        {
-          id: "wealth2",
-          name: "Big Cheese",
-          category: "Wealth",
-          rarity: "Rare",
-          description: "Earn 100,000 lifetime squeeks.",
-          icon: "star",
-          goal: 100000,
-          value: () => state.totalSqueeks,
-        },
-        {
-          id: "wealth3",
-          name: "Hamster Whale",
-          category: "Wealth",
-          rarity: "Epic",
-          description: "Earn a million lifetime squeeks.",
-          icon: "trophy",
-          goal: 1e6,
-          value: () => state.totalSqueeks,
-        },
-        {
-          id: "sp1000",
-          name: "Point Taken",
-          category: "Wealth",
-          rarity: "Rare",
-          description: "Earn 1,000 Squeek Points.",
-          icon: "star",
-          goal: 1000,
-          value: () => state.sp,
-        },
-        {
-          id: "daily1",
-          name: "Hello Again",
-          category: "Loyalty",
-          rarity: "Common",
-          description: "Claim your first daily treat.",
-          icon: "heart",
-          goal: 1,
-          value: () => state.checkin.total,
-        },
-        {
-          id: "streak7",
-          name: "Creature of Habit",
-          category: "Loyalty",
-          rarity: "Rare",
-          description: "Keep a 7-day check-in streak.",
-          icon: "heart",
-          goal: 7,
-          value: () => state.checkin.streak,
-        },
-        {
-          id: "loyal30",
-          name: "Part of the Furniture",
-          category: "Loyalty",
-          rarity: "Epic",
-          description: "Check in on 30 days.",
-          icon: "clock",
-          goal: 30,
-          value: () => state.checkin.total,
-        },
-        {
-          id: "hour",
-          name: "Quality Wheel Time",
-          category: "Loyalty",
-          rarity: "Rare",
-          description: "Play for one active hour.",
-          icon: "clock",
-          goal: 3600,
-          value: () => state.playtime,
-        },
-        {
-          id: "boost10",
-          name: "Helping Paws",
-          category: "Skill",
-          rarity: "Common",
-          description: "Give 10 Turbo boosts.",
-          icon: "bolt",
-          goal: 10,
-          value: () => state.boosts,
-        },
-        {
-          id: "boost100",
-          name: "Turbo Enthusiast",
-          category: "Skill",
-          rarity: "Rare",
-          description: "Give 100 Turbo boosts.",
-          icon: "bolt",
-          goal: 100,
-          value: () => state.boosts,
-        },
-        {
-          id: "sps100",
-          name: "Speed Squeeker",
-          category: "Skill",
-          rarity: "Rare",
-          description: "Reach 100 squeeks per second.",
-          icon: "wheel",
-          goal: 100,
-          value: () => state.bestSps,
-        },
-        {
-          id: "level25",
-          name: "Upper Echeddar",
-          category: "Skill",
-          rarity: "Epic",
-          description: "Reach level 25.",
-          icon: "star",
-          goal: 25,
-          value: () => getLevel(),
-        },
-        {
-          id: "level50",
-          name: "Grand Squeeker",
-          category: "Skill",
-          rarity: "Legendary",
-          description: "Reach level 50.",
-          icon: "trophy",
-          goal: 50,
-          value: () => getLevel(),
-        },
-        {
-          id: "rebirth",
-          name: "Second Wind",
-          category: "Skill",
-          rarity: "Epic",
-          description: "Rebirth your wheel.",
-          icon: "rebirth",
-          goal: 1,
-          value: () => state.rebirths,
-        },
-        {
-          id: "night",
-          name: "Night Owl",
-          category: "Secret",
-          rarity: "Rare",
-          description: "Play between 2 and 4 am, local time.",
-          icon: "moon",
-          goal: 1,
-          value: () => {
-            const h = new Date().getHours();
-            return h >= 2 && h < 4 ? 1 : 0;
-          },
-        },
-        {
-          id: "early",
-          name: "Early Bird",
-          category: "Secret",
-          rarity: "Rare",
-          description: "Play between 5 and 7 am, local time.",
-          icon: "sun",
-          goal: 1,
-          value: () => {
-            const h = new Date().getHours();
-            return h >= 5 && h < 7 ? 1 : 0;
-          },
-        },
-        {
-          id: "cat",
-          name: "Cat Whisperer",
-          category: "Secret",
-          rarity: "Epic",
-          description: "Distract a cat with the laser pointer.",
-          icon: "heart",
-          goal: 1,
-          value: () => state.catScares,
-        },
-        {
-          id: "wallet",
-          name: "A New Connection",
-          category: "Wallet",
-          rarity: "Rare",
-          description: "Optional: link a wallet to your progress.",
-          icon: "wallet",
-          goal: 1,
-          value: () => (wallet.address ? 1 : 0),
-        },
-        {
-          id: "signed",
-          name: "Verified Miner",
-          category: "Wallet",
-          rarity: "Rare",
-          description: "Optional: verify with a free signature.",
-          icon: "check",
-          goal: 1,
-          value: () => (state.verified ? 1 : 0),
-        },
-        {
-          id: "dressed",
-          name: "Dressed to Squeek",
-          category: "Wallet",
-          rarity: "Epic",
-          description: "Optional: give Cheddar a cosmetic upgrade.",
-          icon: "hat",
-          goal: 1,
-          value: () => (state.cosmeticsUsed ? 1 : 0),
-        },
+      // Existing badge IDs remain Bronze IDs so earlier unlock dates survive migration.
+      /** @type {[string,string,string,string,number,string,()=>number][]} */
+      const BADGE_FAMILIES = [
+        ["first","First Squeek","Mining","seed",4,"lifetime squeeks",()=>state.totalSqueeks],
+        ["block1","Block Party","Mining","block",4,"blocks",()=>state.blocks],
+        ["block10","Chain Starter","Mining","block",40,"blocks",()=>state.blocks],
+        ["block100","Chain Keeper","Mining","block",400,"blocks",()=>state.blocks],
+        ["block500","Block Legend","Mining","trophy",2000,"blocks",()=>state.blocks],
+        ["wealth1","Pocket Change","Wealth","seed",4000,"lifetime squeeks",()=>state.totalSqueeks],
+        ["wealth2","Big Cheese","Wealth","star",400000,"lifetime squeeks",()=>state.totalSqueeks],
+        ["wealth3","Hamster Whale","Wealth","trophy",4e6,"lifetime squeeks",()=>state.totalSqueeks],
+        ["sp1000","Point Taken","Wealth","star",4000,"lifetime SP",()=>state.earnedSP],
+        ["daily1","Hello Again","Loyalty","heart",4,"check-ins",()=>state.checkin.total],
+        ["streak7","Creature of Habit","Loyalty","heart",28,"consecutive daily check-ins",()=>state.checkin.streak],
+        ["loyal30","Part of the Furniture","Loyalty","clock",120,"check-ins",()=>state.checkin.total],
+        ["hour","Quality Wheel Time","Loyalty","clock",14400,"active seconds",()=>state.playtime],
+        ["boost10","Helping Paws","Skill","bolt",40,"Turbo boosts",()=>state.boosts],
+        ["boost100","Turbo Enthusiast","Skill","bolt",400,"Turbo boosts",()=>state.boosts],
+        ["sps100","Speed Squeeker","Skill","wheel",400,"squeeks per second",()=>state.bestSps],
+        ["level25","Upper Echeddar","Skill","star",100,"levels",()=>getLevel()],
+        ["level50","Grand Squeeker","Skill","trophy",200,"levels",()=>getLevel()],
+        ["rebirth","Second Wind","Skill","rebirth",4,"rebirths",()=>state.rebirths],
+        ["night","Night Owl","Secret","moon",40,"blocks actively mined between 2 and 4 am local time",()=>state.nightBlocks],
+        ["early","Early Bird","Secret","sun",40,"blocks actively mined between 5 and 7 am local time",()=>state.earlyBlocks],
+        ["cat","Cat Whisperer","Secret","heart",20,"cats distracted with the laser",()=>state.catScares],
+        ["dressed","Dressed to Squeek","Style","hat",3,"cosmetics owned",()=>COSMETICS.filter(c=>state.cosmeticInventory[c.id]).length],
       ];
+      const BADGES = BADGE_FAMILIES.flatMap(([id,name,category,ic,base,unit,value]) => {
+        // Level badges stay attainable at the 2,000-level cap.
+        const goals = id === "dressed" ? [3,5,6] : [Number(base),Number(base)*3,Number(base)*10];
+        return ["Bronze","Silver","Gold"].map((tier,i) => ({id:String(id)+(i ? "_"+tier.toLowerCase() : ""), name:String(name), category:String(category), icon:String(ic), rarity:["Common","Rare","Legendary"][i], tier, goal:goals[i], description:`Reach ${goals[i].toLocaleString()} ${unit}.`, value:/** @type {()=>number} */(value)}));
+      }).concat([
+        {id:"wallet",name:"A New Connection",category:"Wallet",icon:"wallet",rarity:"Common",tier:"Bronze",goal:1,description:"Connect and sign in to one wallet.",value:()=>isPlaying()?1:0},
+        {id:"signed",name:"Verified Miner",category:"Wallet",icon:"check",rarity:"Rare",tier:"Silver",goal:1,description:"Complete the free sign-in signature.",value:()=>isPlaying()?1:0},
+        ...["sprint","control","tapper"].map((id,i)=>({id:"challenge_"+id,name:["Block Sprint","Cool Paws","Quick Paws"][i],category:"Skill",icon:"bolt",rarity:"Epic",tier:"Gold",goal:1,description:["Finish the 5 blocks in 60 seconds challenge.","Finish 12 Turbo boosts in 60 seconds without a jam.","Finish 100 wheel taps in 30 seconds."][i],value:()=>state.challengeWins[id]?1:0})),
+      ]);
       function checkBadges(quiet = false) {
+        if (!isPlaying()) return;
         for (const b of BADGES) {
           if (!state.badges[b.id] && b.value() >= b.goal) {
             state.badges[b.id] = Date.now();
-            if (!quiet) {
-              toast(`Badge unlocked: ${b.name}`, "badge");
-              sound("badge");
-            }
-            panelDirty = true;
-            dirty = true;
+            if (!quiet) { toast(`Badge ready: ${b.name} · ${b.tier}`, "badge"); sound("badge"); }
+            panelDirty = true; dirty = true;
           }
         }
       }
+      const exact = n => Math.floor(finite(n)).toLocaleString();
+      function badgeReady(b) { return !!state.badges[b.id] || b.value() >= b.goal; }
       function renderBadges() {
-        const unlocked = Object.keys(state.badges).filter((id) =>
-          BADGES.some((b) => b.id === id),
-        ).length;
-        const list = BADGES.filter(
-          (b) =>
-            badgeFilter === "All" ||
-            (badgeFilter === "Unlocked" && state.badges[b.id]) ||
-            b.category === badgeFilter,
-        );
-        return `<div class="panel-heading"><div class="between"><h2>Small paws. Big honors.</h2><span class="pill orange">${unlocked} / ${BADGES.length}</span></div><p>Earn your stripes, one squeek at a time.</p></div><div class="badge-filters" aria-label="Badge category">${["All", "Unlocked", "Mining", "Wealth", "Loyalty", "Skill", "Secret", "Wallet"].map((f) => `<button data-badge-filter="${f}" aria-pressed="${badgeFilter === f}">${f}</button>`).join("")}</div><div class="badge-grid">${
-          list.length
-            ? list
-                .map((b) => {
-                  const date = state.badges[b.id],
-                    value = Math.min(b.value(), b.goal);
-                  return `<article class="badge-item ${date ? "unlocked" : ""}"><div class="badge-icon">${icon(b.icon)}</div><h3>${b.name}${b.category === "Wallet" ? ' <span class="muted">· Optional</span>' : ""}</h3><p>${b.description}</p><span class="badge-rarity">${b.rarity}${date ? " · Unlocked" : ""}</span>${date ? `<time datetime="${new Date(date).toISOString()}">${new Date(date).toLocaleDateString()}</time>` : `<div class="progress" role="progressbar" aria-label="${b.name}" aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="${b.goal}"><span style="width:${(value / b.goal) * 100}%"></span></div><p style="margin-top:4px">${fmt(value)} / ${fmt(b.goal)}</p>`}</article>`;
-                })
-                .join("")
-            : '<p class="empty">No badges here yet. Give the wheel a Turbo boost to get started.</p>'
-        }</div>`;
+        const unlocked = BADGES.filter(b=>badgeReady(b)).length;
+        const list = BADGES.filter(b=>badgeFilter==="All" || (badgeFilter==="Unlocked" && badgeReady(b)) || b.category===badgeFilter);
+        return `<div class="panel-heading"><div class="between"><h2>Earn your wheel stripes</h2><span class="pill orange">${unlocked} / ${BADGES.length}</span></div><p>Three tiers. Free signed claims. No contract.</p></div><div class="badge-filters" aria-label="Badge category">${["All","Unlocked","Mining","Wealth","Loyalty","Skill","Secret","Style","Wallet"].map(f=>`<button data-badge-filter="${f}" aria-pressed="${badgeFilter===f}">${f}</button>`).join("")}</div><div class="badge-grid">${list.length ? list.map(b=>{
+          const ready=badgeReady(b), receipt=state.badgeReceipts[b.id], value=Math.min(b.value(),b.goal);
+          return `<article data-badge-id="${b.id}" class="badge-item ${ready?"unlocked":""}"><div class="badge-icon">${icon(b.icon)}</div><h3>${b.name}</h3><span class="badge-tier">${b.tier} · ${b.category}</span><p>${b.description}</p><div class="progress" role="progressbar" aria-label="${b.name} ${b.tier}" aria-valuenow="${Math.floor(value)}" aria-valuemin="0" aria-valuemax="${b.goal}"><span style="width:${Math.min(100,value/b.goal*100)}%"></span></div><p class="badge-progress-copy">${exact(value)} / ${exact(b.goal)}${ready && value<b.goal ? " · Earlier unlock preserved" : ""}</p>${receipt?`<time datetime="${new Date(receipt.time).toISOString()}">Claimed ${new Date(receipt.time).toLocaleDateString()}</time>`:""}<button class="btn small-btn ${ready && !receipt?"primary":"outline"}" data-badge-claim="${b.id}" ${isPlaying() && (!ready || receipt || wallet.connecting) ? "disabled":""}>${receipt?"Claimed":ready?"Claim · Ready":"Locked"}</button></article>`;
+        }).join(""):'<p class="empty">No badges match. Select All to see every requirement.</p>'}</div><p class="small muted" style="margin-top:16px">Receipts are signed by your wallet. Progress and receipts stay on this device.</p>`;
       }
+      async function claimBadges(ids) {
+        if (!requirePlay()) return;
+        if (wallet.connecting || wallet.pending) { toast("Finish or cancel the open request in your wallet first.","info"); return; }
+        const ready=BADGES.filter(b=>ids.includes(b.id) && badgeReady(b) && !state.badgeReceipts[b.id]);
+        if (!ready.length) return;
+        const address=wallet.address, provider=wallet.provider, epoch=wallet.requestId, time=Date.now();
+        const message=`SqueekWheel badge claim\nBadges:\n${ready.map(b=>`${b.name} · ${b.tier} [${b.id}]`).join("\n")}\nAddress: ${address}\nNonce: ${uid()}\nTime: ${new Date(time).toISOString()}\nSite: ${location.origin}\n\nClaim these local game badges. Free signature only. No contract, transaction or token approval.`;
+        wallet.connecting=true; renderPanel();
+        toast(`Sign ${ready.length===1?"this badge":"these "+ready.length+" badges"} in your wallet. No gas.`,"wallet");
+        try {
+          const signature=await walletRequest(provider,"personal_sign",["0x"+bytesHex(new TextEncoder().encode(message)),address]);
+          if (epoch!==wallet.requestId || !isPlaying() || address!==wallet.address) return;
+          if (typeof signature!=="string" || !/^0x[\da-f]{130}$/i.test(signature) || await recoverPersonalSigner(message,signature)!==address) { toast("The signature did not match this wallet. Try again with the same account.","info",true); return; }
+          if (epoch!==wallet.requestId || !isPlaying()) return;
+          for(const b of ready) state.badgeReceipts[b.id]={address,message,signature,time};
+          save(); sound("badge"); toast(`${ready.length} badge ${ready.length===1?"receipt":"receipts"} saved.`,"badge");
+        } catch(error) { toast(walletError(error),"info",true); }
+        finally { wallet.connecting=false; renderPanel(); void refreshWallet(); }
+      }
+      function renderClaims() {
+        const ready=BADGES.filter(b=>badgeReady(b)&&!state.badgeReceipts[b.id]);
+        const claimed=BADGES.filter(b=>state.badgeReceipts[b.id]);
+        return `<div class="panel-heading"><h2>Your signed claims</h2><p>Receipts are signed by your wallet.</p></div><div class="between"><span class="small">${ready.length} ready · ${claimed.length} claimed</span><button class="btn primary" data-action="claim-all" ${isPlaying() && (!ready.length || wallet.connecting)?"disabled":""}>Claim all ready</button></div><p class="small muted" style="margin-top:12px">One readable signature can claim all ready badges. Receipts are local records, not NFTs or on-chain credentials.</p><div class="feature-list">${claimed.length?claimed.map(b=>{const r=state.badgeReceipts[b.id];return `<article class="feature-item"><div class="between"><h3>${b.name} · ${b.tier}</h3><button class="btn small-btn outline" data-receipt-copy="${b.id}">${icon("copy")}Copy receipt</button></div><p>Claimed ${new Date(r.time).toLocaleString()}</p><details class="receipt-details"><summary>View signed receipt</summary><pre>${escapeHtml(JSON.stringify({badge:b.id,...r},null,2))}</pre></details></article>`;}).join(""):'<p class="empty">Earn a badge, then claim it here with a free signature. Every requirement is in Badges.</p>'}</div>`;
+      }
+
       // ====================================================================
       // Leaderboard — replace this adapter with get/submit calls to a real API.
       // Demo players are explicitly labeled; all scores stay in this browser.
@@ -4441,7 +4380,7 @@
             if (
               row &&
               typeof row === "object" &&
-              id !== activeKey &&
+              validAddress(id) && id !== activeKey &&
               row.name &&
               Number.isFinite(row.sp)
             )
@@ -4455,17 +4394,17 @@
                         (period === "Daily" ? dayKey() : weekKey())
                       ? finite(row[period])
                       : 0,
-                level: finite(row.level, 1, 50),
+                level: finite(row.level, 1, 2000),
                 demo: false,
                 verified: row.verified === true,
               });
           }
-          rows.push({
+          if (wallet.address) rows.push({
             id: activeKey,
             name: state.name,
             sp:
               period === "All-time"
-                ? state.sp
+                ? state.earnedSP
                 : state[period === "Weekly" ? "weekly" : "daily"].sp,
             level: getLevel(),
             demo: false,
@@ -4474,10 +4413,11 @@
           return rows.sort((a, b) => b.sp - a.sp);
         },
         submitScore() {
+          if (!wallet.address) return;
           const saved = parse(storage.get("squeekwheel:leaderboard"), {});
           saved[activeKey] = {
             name: state.name,
-            sp: state.sp,
+            sp: state.earnedSP,
             level: getLevel(),
             verified: !!wallet.address && state.verified,
             Weekly: state.weekly.sp,
@@ -4504,434 +4444,296 @@
       function renderLeaderboard() {
         const rows = getLeaderboard(rankPeriod),
           index = rows.findIndex((r) => r.id === activeKey);
-        return `<div class="panel-heading"><h2>The squeek elite</h2><p>Friendly competition, tiny footprints.</p></div><div class="segmented" aria-label="Leaderboard period">${["All-time", "Weekly", "Daily"].map((p) => `<button data-rank-period="${p}" aria-pressed="${rankPeriod === p}">${p}</button>`).join("")}</div><div class="notice">Local leaderboard on this device. Seeded players are labeled Demo. No scores are sent to a server.</div><div class="rank-list">${rankRow(rows[index], index, true)}${rows.map((row, i) => (row.id === activeKey ? "" : rankRow(row, i))).join("")}</div><p class="reset-time">${rankPeriod === "All-time" ? "Your permanent SP survives rebirths." : `Resets in ${duration(nextReset(rankPeriod === "Weekly" ? "weekly" : "daily"))} · UTC`}</p>`;
+        return `<div class="panel-heading"><h2>The squeek elite</h2><p>Friendly competition, tiny footprints.</p></div><div class="segmented" aria-label="Leaderboard period">${["All-time", "Weekly", "Daily"].map((p) => `<button data-rank-period="${p}" aria-pressed="${rankPeriod === p}">${p}</button>`).join("")}</div><div class="notice">Local leaderboard on this device. Seeded players are labeled Demo. No scores are sent to a server.</div><div class="rank-list">${index >= 0 ? rankRow(rows[index], index, true) : ""}${rows.map((row, i) => (row.id === activeKey ? "" : rankRow(row, i))).join("")}</div><p class="reset-time">${rankPeriod === "All-time" ? "Lifetime SP counts all earnings, including SP spent on cosmetics." : `Resets in ${duration(nextReset(rankPeriod === "Weekly" ? "weekly" : "daily"))} · UTC`}</p>`;
       }
       // ====================================================================
       // Profile/Wallet — EIP-1193, EIP-6963; never sends a transaction.
       // ====================================================================
-      /** @type {{provider:any,address:string|null,chainId:string|null,balance:string|null,connecting:boolean,balanceLoading:boolean,networkDismissed:boolean,requestId:number}} */
+      // All wallet access stays behind caught requests. No transaction/approval methods exist.
       const wallet = {
-        provider: null,
-        address: null,
-        chainId: null,
-        balance: null,
-        connecting: false,
-        balanceLoading: false,
-        networkDismissed: false,
-        requestId: 0,
+        provider: null, address: null, chainId: null, balance: null,
+        connecting: false, pending: false, balanceLoading: false,
+        networkDismissed: false, requestId: 0, networkVersion: 0, signedIn: false, signedAt: 0,
       };
       const providers = new Map();
-      let providerCleanup = null;
-      function validAddress(a) {
-        return typeof a === "string" && /^0x[\da-f]{40}$/i.test(a);
+      let providerCleanup = null, discoveryFinished = false, reconnecting = false;
+      const SIGN_IN_TTL = 7 * 86400000;
+      function validAddress(a) { return typeof a === "string" && /^0x[\da-f]{40}$/i.test(a); }
+      function shortAddress(a) { return validAddress(a) ? a.slice(0,6) + "…" + a.slice(-4) : "No wallet"; }
+      function isPlaying() {
+        return !!wallet.address && wallet.signedIn && Date.now() - wallet.signedAt < SIGN_IN_TTL;
       }
-      function shortAddress(a) {
-        return a.slice(0, 6) + "…" + a.slice(-4);
+      function requirePlay() {
+        if (isPlaying()) return true;
+        connectModal();
+        return false;
       }
       function networkName() {
         if (!wallet.chainId) return "Network unavailable";
-        const names = {
-          "0x1": "Ethereum",
-          "0x2105": "Base",
-          "0xa": "Optimism",
-          "0x89": "Polygon",
-          "0xa4b1": "Arbitrum",
-          "0xaa36a7": "Sepolia",
-        };
-        return CHAIN_CONFIG.chainId && wallet.chainId === CHAIN_CONFIG.chainId
-          ? CHAIN_CONFIG.name
-          : names[wallet.chainId] ||
-              `Chain ${parseInt(wallet.chainId || "0", 16)}`;
+        return CHAIN_CONFIG.chainId === wallet.chainId ? CHAIN_CONFIG.name :
+          ({"0x1":"Ethereum","0x2105":"Base","0xaa36a7":"Sepolia","0x89":"Polygon","0xa":"Optimism","0xa4b1":"Arbitrum","0x38":"BNB Chain","0xa86a":"Avalanche"}[wallet.chainId] || `Chain ${parseInt(wallet.chainId,16)}`);
+      }
+      function walletError(error) {
+        const code = error?.code ?? error?.data?.originalError?.code;
+        return code === 4001 ? "Request declined. Browse freely, or try again when you’re ready." :
+          code === -32002 ? "A request is already open. Finish or cancel it in your wallet." :
+          code === 4100 ? "Unlock your wallet and allow this site, then try again." :
+          code === 4900 || code === 4901 ? "Wallet disconnected. Reopen your wallet and try again." :
+          "The wallet couldn’t complete that request. Unlock it and try again.";
+      }
+      function walletStatus(message) {
+        if ($("wallet-status")) $("wallet-status").textContent = message;
+        else toast(message, "info", true);
+      }
+      async function walletRequest(provider, method, params) {
+        if (wallet.pending) throw Object.assign(Error("Request pending"), {code:-32002});
+        wallet.pending = true;
+        try {
+          if (!provider || typeof provider.request !== "function") throw Error("Wallet unavailable");
+          return await provider.request({method, ...(params ? {params} : {})});
+        } finally { wallet.pending = false; renderWalletList(); }
       }
       function announceProvider(event) {
         try {
-          const detail = event.detail;
-          if (
-            !detail ||
-            typeof detail.provider?.request !== "function" ||
-            typeof detail.info?.uuid !== "string"
-          )
-            return;
-          const info = {
-            uuid: detail.info.uuid.slice(0, 100),
-            name: cleanName(detail.info.name) || "Browser wallet",
-            icon:
-              typeof detail.info.icon === "string" &&
-              /^data:image\/(png|webp|jpeg|svg\+xml);/i.test(
-                detail.info.icon,
-              ) &&
-              detail.info.icon.length < 150000
-                ? detail.info.icon
-                : "",
-            rdns: String(detail.info.rdns || "").slice(0, 150),
-          };
-          providers.set(info.uuid, { info, provider: detail.provider });
-          if (
-            !$("dialog").open &&
-            identity.lastWallet &&
-            !identity.disconnected
-          )
-            void silentReconnect();
-          if ($("dialog").open && $("wallet-list") && !wallet.connecting)
-            renderWalletList();
-        } catch {
-          /* Ignore malformed announcements. */
-        }
+          const {detail} = event;
+          if (!detail || typeof detail.provider?.request !== "function" || typeof detail.info?.uuid !== "string") return;
+          providers.set(detail.info.uuid.slice(0,100), {
+            info:{uuid:detail.info.uuid.slice(0,100), name:cleanName(detail.info.name) || "Browser wallet", rdns:String(detail.info.rdns || "").slice(0,150)},
+            provider:detail.provider,
+          });
+          if ($("wallet-list")) renderWalletList();
+          if (!wallet.address && !identity.disconnected) void silentReconnect();
+        } catch { /* A malformed provider cannot interrupt rendering. */ }
       }
       window.addEventListener("eip6963:announceProvider", announceProvider);
       function discovered() {
         const list = Array.from(providers.values());
-        if (!list.length && typeof window.ethereum?.request === "function")
-          list.push({
-            info: {
-              uuid: "browser",
-              name: "Browser wallet",
-              icon: "",
-              rdns: "",
-            },
-            provider: window.ethereum,
-          });
+        try {
+          const injected = window.ethereum;
+          const candidates = Array.isArray(injected?.providers) ? injected.providers : [injected];
+          for (const p of candidates) {
+            if (typeof p?.request !== "function" || list.some(x => x.provider === p)) continue;
+            const name = p.isRabby ? "Rabby" : p.isCoinbaseWallet ? "Coinbase Wallet" : p.isOkxWallet || p.isOKExWallet ? "OKX Wallet" : p.isTrust || p.isTrustWallet ? "Trust Wallet" : p.isMetaMask ? "MetaMask" : "Browser wallet";
+            // Named EIP-6963 providers take precedence over a generic extension proxy.
+            if (list.length && name === "Browser wallet") continue;
+            list.push({info:{uuid:"browser-"+name, name, rdns:""}, provider:p});
+          }
+        } catch { /* Locked/blocked injection is equivalent to no available extension. */ }
         return list;
       }
       function walletLogo(name) {
-        if (/metamask/i.test(name))
-          return '<svg class="wallet-logo" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#ffede0"/><path d="m4 5 8 5h4l8-5-2 14-8 5-8-5Z" fill="#e78a35"/><path d="m4 5 3 9 5-4m12-5-3 9-5-4m-5 9 3 3 3-3" fill="#b95d2b"/><path d="m8 14 4 2-3 1m11-3-4 2 3 1" fill="#3d302c"/></svg>';
-        if (/phantom/i.test(name))
-          return '<svg class="wallet-logo" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#ab9ff2"/><path d="M5 19C5 7 23 4 23 14c0 6-5 9-7 6-2 4-5 3-5 0-3 4-6 3-6-1Z" fill="#fff"/><path d="M16 11v3m4-4v3" stroke="#514578" stroke-width="2" stroke-linecap="round"/></svg>';
-        if (/coinbase/i.test(name))
-          return '<svg class="wallet-logo" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="#2c5ff6"/><circle cx="14" cy="14" r="9" fill="white"/><rect x="10" y="10" width="8" height="8" rx="1" fill="#2c5ff6"/></svg>';
-        return `<span class="wallet-logo" style="display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-ink)">${icon("wallet")}</span>`;
+        const mark=/metamask/i.test(name)?'<path d="m4 5 8 5h4l8-5-2 14-8 5-8-5Z" fill="#e78a35"/><path d="m8 14 4 2-3 1m11-3-4 2 3 1" stroke="#3d302c" stroke-width="2"/>':
+          /rabby/i.test(name)?'<path d="M7 20C2 11 13 7 18 10l3-6 2 2-1 8c5 5-4 11-7 6-3 5-7 4-8 0Z" fill="#829dd9"/><circle cx="19" cy="14" r="1" fill="#292d3b"/>':
+          /coinbase/i.test(name)?'<rect width="28" height="28" rx="7" fill="#2c5ff6"/><circle cx="14" cy="14" r="9" fill="white"/><rect x="10" y="10" width="8" height="8" rx="1" fill="#2c5ff6"/>':
+          /okx/i.test(name)?'<path d="M4 4h7v7H4zm13 0h7v7h-7zM11 11h7v7h-7zM4 18h7v7H4zm14 0h7v7h-7z" fill="#292d3b"/>':
+          /trust/i.test(name)?'<path d="m14 3 10 4v8c0 5-10 10-10 10S4 20 4 15V7Z" fill="#347553"/><path d="m8 14 4 4 8-9" fill="none" stroke="white" stroke-width="2"/>':
+          '<rect x="4" y="7" width="20" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 7V4h16m-3 10h6" fill="none" stroke="currentColor" stroke-width="2"/>';
+        return `<svg class="wallet-logo" viewBox="0 0 28 28" aria-hidden="true">${mark}</svg>`;
       }
       function connectModal() {
-        if (wallet.address) {
+        if (isPlaying()) {
           openTab("profile");
-          $("panel").scrollIntoView({
-            behavior: reducedMotion.matches ? "instant" : "smooth",
-            block: "start",
-          });
+          $("panel").scrollIntoView({behavior:reducedMotion.matches ? "instant" : "smooth", block:"start"});
           return;
         }
-        modal(
-          "A wallet is entirely optional",
-          `<p>Keep your progress. Add a verified profile and a little extra style. Your hamster is happy either way.</p><div id="wallet-list"></div><p id="wallet-status" class="wallet-status" role="status"></p><div class="notice">${icon("lock")} SqueekWheel only reads your address. It never moves your funds.</div><p class="small" style="margin-top:13px">No keys, approvals, transactions or gas fees. Signature verification is optional too.</p>`,
-          null,
-          true,
-        );
+        modal("Connect to start mining", `<p>Browse freely. Connect your wallet to start mining.</p><div id="wallet-list"></div><p id="wallet-status" class="wallet-status" role="status"></p><div class="notice">${icon("lock")} SqueekWheel only reads your address. It never moves your funds.</div><p class="small muted" style="margin-top:12px">Sign “Sign in to SqueekWheel” once, free. No gas, transactions, keys or approvals. Sign-in lasts 7 days on this device.</p>`, null, true);
         renderWalletList();
-        window.dispatchEvent(new Event("eip6963:requestProvider"));
+        if (wallet.connecting || wallet.pending) walletStatus("A request is open in your wallet. Finish or cancel it there.");
       }
       function renderWalletList() {
-        const list = discovered();
         const target = $("wallet-list");
         if (!target) return;
-        target.innerHTML = list.length
-          ? list
-              .map(
-                (p, i) =>
-                  `<button class="wallet-row" data-wallet-index="${i}" ${wallet.connecting ? "disabled" : ""}>${p.info.icon ? `<img src="${escapeHtml(p.info.icon)}" alt="" width="28" height="28">` : walletLogo(p.info.name)}<span>${escapeHtml(p.info.name)}${wallet.connecting ? " · Connecting…" : ""}</span>${icon("arrow")}</button>`,
-              )
-              .join("")
-          : '<div class="notice">No browser wallet found. Keep playing as a guest, or install a wallet when you feel like it.</div>';
-        target.innerHTML += `<div class="section-label">${list.length ? "Use a different wallet" : "Get a wallet"}<small>Optional</small></div>${[
-          { name: "MetaMask", url: "https://metamask.io/download/" },
-          {
-            name: "Coinbase Wallet",
-            url: "https://www.coinbase.com/wallet/downloads",
-          },
-          { name: "Phantom", url: "https://phantom.com/download" },
-        ]
-          .map(
-            (w) =>
-              `<a class="wallet-row" href="${w.url}" target="_blank" rel="noopener noreferrer">${walletLogo(w.name)}<span>Install ${w.name}</span>${icon("external")}</a>`,
-          )
-          .join("")}`;
-        const url = location.href;
-        if (/^https?:/.test(url))
-          target.innerHTML += `<div class="section-label">On your phone</div>${[
-            {
-              name: "MetaMask",
-              url:
-                "https://link.metamask.io/dapp/" +
-                url.replace(/^https?:\/\//, ""),
-            },
-            {
-              name: "Coinbase Wallet",
-              url: "https://go.cb-w.com/dapp?cb_url=" + encodeURIComponent(url),
-            },
-            {
-              name: "Phantom",
-              url:
-                "https://phantom.app/ul/browse/" +
-                encodeURIComponent(url) +
-                "?ref=" +
-                encodeURIComponent(location.origin),
-            },
-          ]
-            .map(
-              (w) =>
-                `<a class="wallet-row" href="${escapeHtml(w.url)}" target="_blank" rel="noopener noreferrer">${walletLogo(w.name)}<span>Open in ${w.name}</span>${icon("external")}</a>`,
-            )
-            .join("")}`;
-        target
-          .querySelectorAll("[data-wallet-index]")
-          .forEach((button) =>
-            button.addEventListener(
-              "click",
-              () =>
-                void connectWallet(
-                  discovered()[
-                    Number(button.getAttribute("data-wallet-index"))
-                  ],
-                ),
-            ),
-          );
-      }
-      async function connectWallet(entry) {
-        if (!entry || wallet.connecting) return;
-        wallet.connecting = true;
-        renderWalletList();
-        if ($("wallet-status"))
-          $("wallet-status").textContent =
-            "Waiting for your wallet. Your hamster is still mining.";
-        try {
-          const accounts = await entry.provider.request({
-            method: "eth_requestAccounts",
-          });
-          if (!Array.isArray(accounts) || !validAddress(accounts[0])) {
-            if ($("wallet-status"))
-              $("wallet-status").textContent =
-                "Your wallet may be locked. Unlock it, then try again. You can keep playing.";
-            return;
-          }
-          const address = accounts[0].toLowerCase();
-          wallet.connecting = false;
-          confirmAction(
-            "Keep your hamster’s hard work?",
-            `Keep your current progress and link it to this wallet? <span class="profile-address">${escapeHtml(address)}</span>${storage.get(SAVE_KEY + address) ? "This wallet has a save on this device. Linking replaces that save with your current progress. Export either save first if you want a backup." : "Your squeeks, upgrades, badges and quests all come with you."}`,
-            "Keep progress & link",
-            () => void linkWallet(entry, address),
-          );
-        } catch (error) {
-          if ($("wallet-status"))
-            $("wallet-status").textContent =
-              error?.code === 4001
-                ? "No problem, keep playing as a guest"
-                : error?.code === -32002
-                  ? "A request is already open. Check your wallet, or keep playing."
-                  : "Your wallet may be locked or unavailable. Unlock it and try again, or keep playing.";
-        } finally {
-          wallet.connecting = false;
-          if ($("wallet-list")) renderWalletList();
+        const list = discovered();
+        if (wallet.address) {
+          target.innerHTML = `<span class="profile-address">${wallet.address}</span><button class="btn primary" style="width:100%;margin-top:12px" id="sign-in-button" ${wallet.connecting || wallet.pending ? "disabled" : ""}>${wallet.connecting ? "Check your wallet…" : "Sign in to SqueekWheel"}</button><button class="btn outline" style="width:100%;margin-top:10px" data-action="disconnect">Disconnect</button>`;
+          $("sign-in-button").onclick = () => void signInWallet();
+          return;
         }
+        target.innerHTML = list.map((p,i) => `<button class="wallet-row" data-wallet-index="${i}" ${wallet.connecting || wallet.pending ? "disabled" : ""}>${walletLogo(p.info.name)}<span>${escapeHtml(p.info.name)}</span>${icon("arrow")}</button>`).join("");
+        if (!list.length) {
+          target.innerHTML = discoveryFinished ? '<div class="notice">No browser wallet found. Install a wallet, or open this page in its app.</div>' : '<div class="notice" role="status">Looking for browser wallets…</div>';
+        }
+        if (discoveryFinished) {
+          const installs = [["MetaMask","https://metamask.io/download/"],["Rabby","https://rabby.io/"],["Coinbase Wallet","https://www.coinbase.com/wallet/downloads"],["OKX Wallet","https://www.okx.com/web3"],["Trust Wallet","https://trustwallet.com/download"]];
+          target.innerHTML += `<div class="section-label">${list.length ? "Install another wallet" : "Get a wallet"}</div>` + installs.map(([name,url]) => `<a class="wallet-row" href="${url}" target="_blank" rel="noopener noreferrer">${walletLogo(name)}<span>Install ${name}</span>${icon("external")}</a>`).join("");
+          const page = location.href, pageNoProtocol = page.replace(/^https?:\/\//, "");
+          const links = [["MetaMask",`https://link.metamask.io/dapp/${pageNoProtocol}`],["Coinbase Wallet",`https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(page)}`],["Trust Wallet",`https://link.trustwallet.com/open_url?coin_id=60&url=${encodeURIComponent(page)}`]];
+          target.innerHTML += '<div class="section-label">Open on your phone</div>' + links.map(([name,url]) => `<a class="wallet-row" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${walletLogo(name)}<span>Open in ${name}</span>${icon("external")}</a>`).join("");
+          target.innerHTML += '<p class="small muted" style="margin-top:12px">For Rabby or OKX on a phone, copy this page link and paste it into the wallet’s browser.</p><button class="btn outline" data-action="copy-page" style="margin-top:10px">Copy page link</button>';
+        }
+        target.querySelectorAll("[data-wallet-index]").forEach(button => {
+          button.onclick = () => void connectWallet(list[Number(button.dataset.walletIndex)]);
+        });
       }
-      async function linkWallet(entry, address) {
+      function resetRuntime() {
+        activeEvent = null; activeChallenge = null; turboUntil = 0; fanUntil = 0;
+        lastTapAt = 0; lastSampleAt = 0; lastFrame = performance.now();
+        $("event-bar").hidden = true; $("laser").hidden = true;
+        nextEventAt = Date.now() + 65000; chainDirty = true; panelDirty = true;
+      }
+      function activateAccount(entry, address) {
         save();
         wallet.requestId++;
-        wallet.provider = entry.provider;
-        wallet.address = address;
-        wallet.balance = null;
-        wallet.chainId = null;
-        wallet.networkDismissed = false;
-        activeKey = address;
-        state.verified = state.verified && state.verifiedFor === address;
-        identity.lastWallet = address;
-        identity.providerId = entry.info.uuid;
+        wallet.provider = entry.provider; wallet.address = address.toLowerCase();
+        wallet.signedIn = false; wallet.signedAt = 0; wallet.balance = null; wallet.balanceLoading = false;
+        wallet.chainId = null; wallet.networkDismissed = false;
+        activeKey = wallet.address;
+        state = loadState(activeKey); state.id = activeKey;
+        state.verified = false; state.verifiedFor = "";
+        identity.lastWallet = activeKey; identity.providerId = entry.info.rdns || entry.info.uuid;
         identity.disconnected = false;
-        if (!state.walletBonus) {
-          const bonus = state.sp * 0.05;
-          addSP(bonus);
-          state.walletBonus = true;
-          toast(
-            `Wallet linked. +${fmt(bonus)} SP. Your one-time 5% bonus.`,
-            "wallet",
-          );
+        storage.set(META_KEY, JSON.stringify(identity));
+        resetRuntime(); bindProvider(); lastLevel = getLevel(); renderAll();
+      }
+      async function restoreSignIn() {
+        const address = wallet.address, epoch = wallet.requestId;
+        try {
+          const auth = parse(storage.get("squeekwheel:auth:"+address));
+          if (!auth || auth.address !== address || !Number.isFinite(auth.time) || auth.time > Date.now() || Date.now()-auth.time >= SIGN_IN_TTL ||
+              typeof auth.message !== "string" || auth.message.length > 2000 || !auth.message.startsWith("Sign in to SqueekWheel\n") || !auth.message.includes(`Site: ${location.origin}\n`) || !auth.message.includes(`Address: ${address}\n`) || !auth.message.includes(`Time: ${new Date(auth.time).toISOString()}\n`) || !/^0x[\da-f]{130}$/i.test(auth.signature)) return false;
+          const signer = await recoverPersonalSigner(auth.message, auth.signature);
+          if (epoch !== wallet.requestId || wallet.address !== address || signer !== address) return false;
+          wallet.signedIn = true; wallet.signedAt = auth.time;
+          state.verified = true; state.verifiedFor = address;
+          return true;
+        } catch { return false; }
+      }
+      async function connectWallet(entry) {
+        if (!entry || wallet.connecting || wallet.pending) { walletStatus("A request is already open. Check your wallet."); return; }
+        wallet.connecting = true; renderWalletList(); walletStatus("Choose an account in your wallet.");
+        const epoch = wallet.requestId;
+        try {
+          const accounts = await walletRequest(entry.provider, "eth_requestAccounts");
+          if (epoch !== wallet.requestId) return;
+          if (!Array.isArray(accounts) || !validAddress(accounts[0])) { walletStatus("Your wallet may be locked. Unlock it and try again."); return; }
+          activateAccount(entry, accounts[0]);
+          if (await restoreSignIn()) {
+            finishSignIn();
+          } else await signInCore();
+        } catch(error) { walletStatus(walletError(error)); }
+        finally { wallet.connecting = false; renderWalletList(); renderGameStatus(); void refreshWallet(); }
+      }
+      async function signInCore() {
+        const address = wallet.address, provider = wallet.provider, epoch = wallet.requestId;
+        if (!address || !provider) return;
+        const time = Date.now();
+        const message = `Sign in to SqueekWheel\nAddress: ${address}\nNonce: ${uid()}\nTime: ${new Date(time).toISOString()}\nSite: ${location.origin}\n\nStart my local hamster mining game. This is free and authorizes no transactions or token approvals.`;
+        walletStatus("Sign the free sign-in message in your wallet.");
+        const signature = await walletRequest(provider, "personal_sign", ["0x"+bytesHex(new TextEncoder().encode(message)), address]);
+        if (wallet.address !== address || wallet.provider !== provider || epoch !== wallet.requestId) return;
+        if (typeof signature !== "string" || !/^0x[\da-f]{130}$/i.test(signature) || await recoverPersonalSigner(message,signature) !== address) {
+          walletStatus("That signature did not match this account. Select the same account in your wallet and try again."); return;
         }
-        bindProvider();
-        checkBadges();
-        save();
-        renderAll();
-        await refreshWallet();
-        toast("Progress linked. The wheel keeps turning.", "wallet");
+        if (epoch !== wallet.requestId) return;
+        storage.set("squeekwheel:auth:"+address, JSON.stringify({address, message, signature, time}));
+        wallet.signedIn = true; wallet.signedAt = time;
+        state.verified = true; state.verifiedFor = address;
+        finishSignIn();
+      }
+      function finishSignIn() {
+        closeModal(); evaluateProgress(true); renderAll();
+        welcomeBack(); save();
+        toast("Signed in. Your hamster is mining.", "wheel");
+      }
+      async function signInWallet() {
+        if (wallet.connecting || wallet.pending || !wallet.address) return;
+        wallet.connecting = true; renderWalletList();
+        try { await signInCore(); } catch(error) { walletStatus(walletError(error)); }
+        finally { wallet.connecting = false; renderWalletList(); renderGameStatus(); void refreshWallet(); }
       }
       function bindProvider() {
-        if (providerCleanup) providerCleanup();
+        try { providerCleanup?.(); } catch { /* Ignore extension cleanup errors. */ }
+        providerCleanup = null;
         const provider = wallet.provider;
-        if (!provider?.on) return;
-        const accountsChanged = (accounts) => {
-          if (!Array.isArray(accounts) || !validAddress(accounts[0])) {
-            disconnectWallet(true);
-            toast(
-              "Wallet locked or disconnected. Your progress is safe in guest mode.",
-              "info",
-            );
-            return;
-          }
-          const address = accounts[0].toLowerCase();
-          if (address !== wallet.address) {
-            save();
-            wallet.requestId++;
-            const saved = storage.get(SAVE_KEY + address);
-            const guestCopy = validateState(JSON.parse(JSON.stringify(state)));
-            state = saved ? loadState(address) : guestCopy;
-            state.verified = saved
-              ? state.verified && state.verifiedFor === address
-              : false;
-            activeKey = address;
-            wallet.address = address;
-            wallet.balance = null;
-            identity.lastWallet = address;
-            wallet.networkDismissed = false;
-            lastLevel = getLevel();
-            displaySq = state.squeeks;
-            displaySp = state.sp;
-            activeEvent = null;
-            turboUntil = 0;
-            $("event-bar").hidden = true;
-            $("laser").hidden = true;
-            if (!state.walletBonus) {
-              addSP(state.sp * 0.05);
-              state.walletBonus = true;
-            }
-            save();
-            renderAll();
-            void refreshWallet();
-            toast(
-              saved
-                ? "Switched to this wallet’s saved hamster."
-                : "New wallet linked. Your hamster came along.",
-              "wallet",
-            );
-          }
+        if (!provider) return;
+        const accountsChanged = async accounts => {
+          try {
+            if (provider !== wallet.provider) return;
+            const address = Array.isArray(accounts) && validAddress(accounts[0]) ? accounts[0].toLowerCase() : null;
+            if (!address) { disconnectWallet(true); toast("Wallet locked or disconnected. Browse freely; your save is safe.", "info"); return; }
+            if (address === wallet.address) return;
+            const entry = {provider, info:{uuid:identity.providerId, rdns:identity.providerId}};
+            activateAccount(entry,address);
+            if (await restoreSignIn()) { evaluateProgress(true); welcomeBack(); }
+            renderAll(); void refreshWallet();
+            toast(isPlaying() ? "Account switched. Loaded this address’s profile." : "Account switched. Sign in to start this hamster’s wheel.", "wallet");
+          } catch { toast("Account changed. Reconnect to load its profile.", "info"); disconnectWallet(true); }
         };
-        const chainChanged = (chain) => {
-          wallet.requestId++;
-          wallet.chainId =
-            typeof chain === "string" && /^0x[\da-f]+$/i.test(chain)
-              ? chain
-              : null;
-          wallet.balance = null;
-          wallet.networkDismissed = false;
-          void refreshWallet();
-          panelDirty = true;
+        const chainChanged = chain => {
+          try {
+            if (provider !== wallet.provider) return;
+            const nextChain = typeof chain === "string" && /^0x[\da-f]+$/i.test(chain) ? "0x"+BigInt(chain).toString(16) : null;
+            if(nextChain!==wallet.chainId)wallet.networkVersion++;
+            wallet.chainId=nextChain;
+            wallet.balance = null; wallet.networkDismissed = false;
+            renderWalletButton(); renderGameStatus(); if (tab === "profile") renderPanel();
+            if (!wallet.connecting && !wallet.pending) void refreshWallet();
+          } catch { wallet.chainId = null; renderWalletButton(); }
         };
         const disconnected = () => {
-          disconnectWallet(true);
-          toast("Wallet disconnected. Keep playing as a guest.", "wallet");
+          if (provider !== wallet.provider) return;
+          disconnectWallet(true); toast("Wallet disconnected. You can keep browsing.", "info");
         };
         try {
-          provider.on("accountsChanged", accountsChanged);
-          provider.on("chainChanged", chainChanged);
-          provider.on("disconnect", disconnected);
-          providerCleanup = () => {
-            try {
-              provider.removeListener?.("accountsChanged", accountsChanged);
-              provider.removeListener?.("chainChanged", chainChanged);
-              provider.removeListener?.("disconnect", disconnected);
-            } catch {}
-          };
-        } catch {
-          /* Some providers expose request only. */
-        }
+          if (typeof provider.on === "function") {
+            provider.on("accountsChanged",accountsChanged); provider.on("chainChanged",chainChanged); provider.on("disconnect",disconnected);
+            providerCleanup = () => {
+              try { provider.removeListener?.("accountsChanged",accountsChanged); provider.removeListener?.("chainChanged",chainChanged); provider.removeListener?.("disconnect",disconnected); } catch { /* Optional extension cleanup. */ }
+            };
+          }
+        } catch { toast("This wallet does not report account changes. Reconnect after changing accounts.", "info"); }
       }
       async function refreshWallet() {
-        if (!wallet.provider || !wallet.address) return;
-        const request = ++wallet.requestId,
-          provider = wallet.provider,
-          address = wallet.address;
+        if (!wallet.provider || !wallet.address || wallet.connecting || wallet.pending) return;
+        const address = wallet.address, provider = wallet.provider, epoch = wallet.requestId, networkVersion=wallet.networkVersion;
         wallet.balanceLoading = true;
         try {
-          const chain = await provider.request({ method: "eth_chainId" });
-          if (request !== wallet.requestId || wallet.address !== address)
-            return;
-          wallet.chainId =
-            typeof chain === "string" && /^0x[\da-f]+$/i.test(chain)
-              ? chain
-              : null;
-          const balance = await provider.request({
-            method: "eth_getBalance",
-            params: [address, "latest"],
-          });
-          if (request !== wallet.requestId || wallet.address !== address)
-            return;
-          if (typeof balance === "string" && /^0x[\da-f]+$/i.test(balance)) {
-            const wei = BigInt(balance);
-            wallet.balance = (Number(wei / 1000000000000n) / 1e6).toFixed(4);
-          }
-        } catch {
-          /* Balance is optional: unavailable is never shown as zero. */
-        } finally {
-          if (request === wallet.requestId) {
-            wallet.balanceLoading = false;
-            panelDirty = tab === "profile";
-            renderWalletButton();
-          }
+          const chain = await walletRequest(provider,"eth_chainId");
+          if (epoch !== wallet.requestId || networkVersion !== wallet.networkVersion) return;
+          wallet.chainId = typeof chain === "string" && /^0x[\da-f]+$/i.test(chain) ? "0x"+BigInt(chain).toString(16) : null;
+          const value = await walletRequest(provider,"eth_getBalance",[address,"latest"]);
+          if (epoch !== wallet.requestId || networkVersion !== wallet.networkVersion) return;
+          wallet.balance = typeof value === "string" && /^0x[\da-f]+$/i.test(value) ? (Number(BigInt(value)/1000000000000n)/1e6).toFixed(4) : null;
+        } catch { /* An unavailable balance is shown honestly and never blocks play. */ }
+        finally {
+          if (epoch === wallet.requestId && networkVersion === wallet.networkVersion) { wallet.balanceLoading = false; renderWalletButton(); renderGameStatus(); if (tab === "profile") renderPanel(); }
+          else if(wallet.address) void refreshWallet();
         }
       }
       function disconnectWallet(silent = false) {
         save();
-        if (providerCleanup) {
-          providerCleanup();
-          providerCleanup = null;
-        }
-        wallet.requestId++;
-        wallet.provider = null;
-        wallet.address = null;
-        wallet.balance = null;
-        wallet.chainId = null;
-        wallet.balanceLoading = false;
-        wallet.connecting = false;
+        try { providerCleanup?.(); } catch { /* Optional cleanup. */ }
+        providerCleanup = null; wallet.requestId++;
+        wallet.provider = null; wallet.address = null; wallet.signedIn = false; wallet.signedAt = 0;
+        wallet.chainId = null; wallet.balance = null; wallet.balanceLoading = false;
+        // An extension's unresolved request remains pending until it actually settles.
         identity.disconnected = true;
-        identity.lastWallet = null;
-        activeKey = identity.guestId;
-        save();
-        renderAll();
-        if (!silent)
-          toast("Back to guest mode. Every squeek is still here.", "check");
+        storage.set(META_KEY, JSON.stringify(identity));
+        activeKey = "browse"; state = freshState("browse"); resetRuntime();
+        closeModal(); renderAll();
+        if (!silent) toast("Disconnected. Browse freely. Your wallet’s save is safe.", "check");
       }
       async function silentReconnect() {
-        if (
-          !identity.lastWallet ||
-          identity.disconnected ||
-          wallet.address ||
-          wallet.connecting
-        )
-          return;
-        for (const entry of discovered()) {
-          if (
-            identity.providerId &&
-            entry.info.uuid !== identity.providerId &&
-            discovered().length > 1
-          )
-            continue;
-          try {
-            const accounts = await entry.provider.request({
-              method: "eth_accounts",
-            });
-            if (!Array.isArray(accounts)) continue;
-            const address = accounts.find(
-              (a) => validAddress(a) && a.toLowerCase() === identity.lastWallet,
-            );
-            if (!address) continue;
-            save();
-            activeKey = address.toLowerCase();
-            state = loadState(activeKey);
-            wallet.provider = entry.provider;
-            wallet.address = activeKey;
-            bindProvider();
-            lastLevel = getLevel();
-            welcomeBack();
-            displaySq = state.squeeks;
-            displaySp = state.sp;
-            renderAll();
-            await refreshWallet();
+        if (reconnecting || identity.disconnected || wallet.address || wallet.connecting || wallet.pending) return;
+        reconnecting = true;
+        try {
+          let list = discovered();
+          list.sort((a,b) => Number((b.info.rdns || b.info.uuid) === identity.providerId) - Number((a.info.rdns || a.info.uuid) === identity.providerId));
+          for (const entry of list) {
+            const epoch = wallet.requestId;
+            let accounts;
+            try { accounts = await walletRequest(entry.provider,"eth_accounts"); } catch { continue; }
+            if (epoch !== wallet.requestId || identity.disconnected) return;
+            if (!Array.isArray(accounts) || !validAddress(accounts[0])) continue;
+            activateAccount(entry,accounts[0]);
+            if (await restoreSignIn()) { evaluateProgress(true); welcomeBack(); }
+            renderAll(); void refreshWallet();
             return;
-          } catch {
-            /* Silent reconnection never prompts or surfaces errors. */
           }
-        }
+        } catch { /* Silent reconnect never prompts or prevents browsing. */ }
+        finally { reconnecting = false; }
       }
-      // Self-contained EIP-191 recovery: Keccak-256 + secp256k1 public-key recovery.
-      // This verifies a public signature only. No secret or signing key exists in the app.
+
       const MASK64 = (1n << 64n) - 1n;
       const KECCAK_RC = [
         0x1n,
@@ -5105,136 +4907,40 @@
           );
         return "0x" + bytesHex(keccak256(bytes)).slice(-40);
       }
-      async function verifyWallet() {
-        if (!wallet.provider || !wallet.address) return;
-        const address = wallet.address,
-          provider = wallet.provider;
-        const button = /** @type {HTMLButtonElement} */ ($("verify-wallet"));
-        if (button) {
-          button.disabled = true;
-          button.textContent = "Check your wallet…";
-        }
-        try {
-          const message = `SqueekWheel profile verification\n\nAddress: ${address}\nSite: ${location.origin}\nPurpose: Add a local verified profile checkmark. No transaction, approval, or access to funds.\nIssued: ${new Date().toISOString()}\nNonce: ${uid()}`;
-          const bytes = new TextEncoder().encode(message);
-          const hex =
-            "0x" +
-            Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
-          const signature = await provider.request({
-            method: "personal_sign",
-            params: [hex, address],
-          });
-          if (wallet.address !== address || wallet.provider !== provider)
-            return;
-          if (
-            typeof signature !== "string" ||
-            !/^0x[\da-f]{130}$/i.test(signature)
-          )
-            throw Error("Signature not returned");
-          const recovered = await recoverPersonalSigner(message, signature);
-          if (wallet.address !== address || wallet.provider !== provider)
-            return;
-          if (recovered.toLowerCase() !== address)
-            throw Error("Signature mismatch");
-          state.verified = true;
-          state.verifiedFor = address;
-          checkBadges();
-          toast(
-            "Verified Miner. Signature checked locally. No gas, ever.",
-            "check",
-          );
-          sound("badge");
-          save();
-          renderAll();
-        } catch (error) {
-          toast(
-            error?.code === 4001
-              ? "No problem. Verification is optional. Keep squeeking."
-              : "Verification wasn’t completed. Try again, or keep playing without a checkmark.",
-            "info",
-            error?.code !== 4001,
-          );
-          panelDirty = true;
-        }
-      }
       async function switchNetwork() {
-        if (
-          !wallet.provider ||
-          !CHAIN_CONFIG.chainId ||
-          !CHAIN_CONFIG.name ||
-          !/^https:\/\//.test(CHAIN_CONFIG.rpcUrl) ||
-          !CHAIN_CONFIG.symbol
-        )
+        if (!wallet.provider || !CHAIN_CONFIG.chainId || wallet.pending || wallet.connecting) {
+          if (!wallet.address) connectModal();
+          else toast("Finish the open wallet request first.", "info");
           return;
-        try {
-          await wallet.provider.request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: CHAIN_CONFIG.chainId }],
-          });
-        } catch (error) {
-          if (error?.code === 4902) {
-            try {
-              await wallet.provider.request({
-                method: "wallet_addEthereumChain",
-                params: [
-                  {
-                    chainId: CHAIN_CONFIG.chainId,
-                    chainName: CHAIN_CONFIG.name,
-                    nativeCurrency: {
-                      name: CHAIN_CONFIG.symbol,
-                      symbol: CHAIN_CONFIG.symbol,
-                      decimals: 18,
-                    },
-                    rpcUrls: [CHAIN_CONFIG.rpcUrl],
-                    ...(CHAIN_CONFIG.explorer
-                      ? { blockExplorerUrls: [CHAIN_CONFIG.explorer] }
-                      : {}),
-                  },
-                ],
-              });
-            } catch {
-              toast(
-                "Network unchanged. Your hamster can mine on any network.",
-                "info",
-              );
-            }
-          } else
-            toast(
-              "Network unchanged. Your hamster can mine on any network.",
-              "info",
-            );
         }
-        await refreshWallet();
+        const provider = wallet.provider;
+        wallet.connecting = true;
+        try {
+          try { await walletRequest(provider,"wallet_switchEthereumChain",[{chainId:CHAIN_CONFIG.chainId}]); }
+          catch(error) {
+            if (error?.code !== 4902) throw error;
+            await walletRequest(provider,"wallet_addEthereumChain",[{
+              chainId:CHAIN_CONFIG.chainId, chainName:CHAIN_CONFIG.name,
+              nativeCurrency:{name:CHAIN_CONFIG.symbol,symbol:CHAIN_CONFIG.symbol,decimals:18},
+              rpcUrls:[CHAIN_CONFIG.rpcUrl], blockExplorerUrls:[CHAIN_CONFIG.explorer],
+            }]);
+          }
+          toast("Network request completed. Mining works on every network.", "check");
+        } catch(error) { toast(walletError(error)+" Mining works on every network.","info"); }
+        finally { wallet.connecting = false; void refreshWallet(); }
       }
       function renderWalletButton() {
         const button = $("wallet-button");
-        button.innerHTML = wallet.address
-          ? icon("wallet") +
-            `<span>${shortAddress(wallet.address)}</span>${state.verified ? icon("check") : ""}`
-          : `${icon("wallet")}<span class="desktop-wallet-label">Connect Wallet <span style="font-weight:400">(optional)</span></span><span class="mobile-wallet-label">Connect Wallet <span style="font-weight:400">(optional)</span></span>`;
-        button.setAttribute(
-          "aria-label",
-          wallet.address
-            ? `Wallet ${shortAddress(wallet.address)}. Open profile`
-            : "Connect Wallet (optional)",
-        );
+        button.innerHTML = wallet.address ? `<span class="avatar">${avatar(wallet.address)}</span><span>${shortAddress(wallet.address)}<span class="wallet-meta">${wallet.balanceLoading ? "Reading balance…" : wallet.balance === null ? "Balance unavailable" : wallet.balance+" "+nativeSymbol()} · ${escapeHtml(networkName())}</span></span>` : `${icon("wallet")}<span>Connect Wallet</span>`;
+        button.setAttribute("aria-label",wallet.address ? `Wallet ${shortAddress(wallet.address)}. ${networkName()}. Open profile` : "Connect Wallet");
       }
       $("wallet-button").onclick = connectModal;
       function renderProfile() {
-        const lv = getLevel(),
-          badges = BADGES.filter((b) => state.badges[b.id]),
-          seed = wallet.address || state.id;
-        return `<div class="profile-hero"><div class="avatar">${avatar(seed)}</div><h2>${escapeHtml(state.name)} ${wallet.address && state.verified ? `<span class="verified" title="Verified Miner">${icon("check")}</span>` : ""}</h2><p>Level ${lv} · ${wallet.address ? "Verified Miner" : levelTitle(lv)} · ${wallet.address ? "Wallet linked" : "Happily playing as a guest"}</p></div><form id="nickname-form"><div class="field"><label for="nickname">Miner nickname</label><div class="input-row"><input id="nickname" name="nickname" autocomplete="nickname" maxlength="28" required value="${escapeHtml(state.name)}"><button class="btn outline" type="submit">Save</button></div><span class="small muted">Up to 28 characters. Make it your own.</span></div></form><dl class="profile-stats"><div><dt>Lifetime squeeks</dt><dd>${fmt(state.totalSqueeks)}</dd></div><div><dt>Squeek Points</dt><dd>${fmt(state.sp)} SP</dd></div><div><dt>Blocks mined</dt><dd>${fmt(state.blocks)}</dd></div><div><dt>Best mining speed</dt><dd>${fmt(state.bestSps)} / sec</dd></div><div><dt>Active playtime</dt><dd>${duration(state.playtime)}</dd></div><div><dt>Joined</dt><dd>${new Date(state.joined).toLocaleDateString()}</dd></div></dl><h3>Badge showcase <span class="muted small">${badges.length} unlocked</span></h3><div class="badge-showcase">${
-          badges
-            .slice(0, 6)
-            .map(
-              (b) =>
-                `<div class="badge-icon" title="${b.name}" role="img" aria-label="${b.name}">${icon(b.icon)}</div>`,
-            )
-            .join("") ||
-          '<p class="small muted">Your first badge is just a squeek away.</p>'
-        }</div><div class="profile-actions"><button class="btn outline" data-action="share">${icon("external")}Share My Hamster Card</button></div><div class="section-label">${wallet.address ? "Your wallet" : "A little optional extra"}<small>Always your choice</small></div>${wallet.address ? `<span class="profile-address">${wallet.address}</span><div class="profile-actions"><button class="btn small-btn outline" data-action="copy-address">${icon("copy")}Copy address</button><a class="btn small-btn outline" href="${explorerUrl()}" target="_blank" rel="noopener noreferrer">Explorer ${icon("external")}</a></div><div class="notice"><div class="between"><strong>${escapeHtml(networkName())}</strong><span>${wallet.balanceLoading ? "Reading balance…" : wallet.balance === null ? "Balance unavailable" : wallet.balance + " " + nativeSymbol()}</span></div></div>${CHAIN_CONFIG.chainId && wallet.chainId !== CHAIN_CONFIG.chainId && !wallet.networkDismissed ? `<div class="notice">Your wallet is on another network. The game keeps working.<div class="profile-actions" style="margin-top:9px"><button class="btn small-btn outline" data-action="switch-network">Switch to ${escapeHtml(CHAIN_CONFIG.name)}</button><button class="btn small-btn outline" data-action="dismiss-network">Dismiss hint</button></div></div>` : ""}${!state.verified ? '<button class="btn outline" id="verify-wallet" style="width:100%;margin-top:13px">Verify profile with a free signature</button><p class="small muted" style="margin-top:7px">Optional. Adds only a checkmark. No gas or transactions.</p>' : '<div class="notice">✓ Verified Miner · signature checked locally</div>'}<div class="section-label">Cheddar’s wardrobe<small>Wallet cosmetics</small></div><div class="cosmetics"><div class="field"><label for="hat-select">Hat</label><select id="hat-select"><option value="none" ${state.hat === "none" ? "selected" : ""}>Natural floof</option><option value="top" ${state.hat === "top" ? "selected" : ""}>Top hat</option><option value="crown" ${state.hat === "crown" ? "selected" : ""}>Cheddar crown</option></select></div><div class="field"><label for="wheel-select">Wheel color</label><select id="wheel-select"><option value="orange" ${state.wheelColor === "orange" ? "selected" : ""}>Sunset orange</option><option value="mint" ${state.wheelColor === "mint" ? "selected" : ""}>Garden mint</option><option value="violet" ${state.wheelColor === "violet" ? "selected" : ""}>Lavender dusk</option></select></div></div><button class="btn outline" data-action="disconnect" style="width:100%;margin-top:15px">Disconnect · keep all progress</button>` : `<div class="notice"><p class="small">Address avatar, hats, wheel colors and a 5% SP bonus. You can keep playing without a wallet.</p><button class="btn outline" data-action="connect" style="width:100%;margin-top:12px">${icon("wallet")}Connect Wallet (optional)</button></div>`}<p class="small muted" style="margin-top:12px">SqueekWheel only reads your address. It never moves your funds.</p><div class="section-label">Invite a fellow squeeker</div><p class="small muted" style="margin-top:5px">A local referral code for sharing, with no tracking or rewards.</p><div class="between" style="margin-top:10px"><span class="referral-code">SQ-${hash(state.id).toString(36).toUpperCase()}</span><button class="btn small-btn outline" data-action="referral">${icon("copy")}Copy code</button></div><div class="section-label">Start a bigger little empire</div><p class="small muted" style="margin-top:5px">Rebirth unlocks at 25 blocks per run. Keep permanent SP, XP, badges and your chain.</p><div class="between" style="margin-top:12px"><span class="small muted">${state.runBlocks} / 25 blocks · ${state.prestige.toFixed(2)}× permanent</span><button class="btn small-btn outline" data-action="rebirth" ${state.runBlocks < 25 ? "disabled" : ""}>${icon("rebirth")}Rebirth</button></div>`;
+        const legacy = loadState(identity.guestId);
+        const canMigrate = isPlaying() && legacy.totalSqueeks > 0 && !storage.get("squeekwheel:legacy-imported");
+        return `<div class="profile-hero"><div class="avatar">${avatar(wallet.address || state.id)}</div><h2>${wallet.address ? escapeHtml(state.name) : "Meet your next miner"}</h2><p>${wallet.address ? `Level ${getLevel()} · ${isPlaying() ? "Signed in" : "Sign-in required"}` : "Connect an address to create or load its hamster."}</p></div><form id="nickname-form"><div class="field"><label for="nickname">Miner nickname</label><div class="input-row"><input id="nickname" name="nickname" autocomplete="nickname" maxlength="28" required value="${escapeHtml(state.name)}" ${!isPlaying() ? "readonly" : ""}><button class="btn outline" type="submit" data-play>Save</button></div><span class="small muted">Up to 28 characters. Saved per wallet on this device.</span></div></form><dl class="profile-stats"><div><dt>Lifetime squeeks</dt><dd>${fmt(state.totalSqueeks)}</dd></div><div><dt>SP balance</dt><dd>${fmt(state.sp)} SP</dd></div><div><dt>Lifetime SP earned</dt><dd>${fmt(state.earnedSP)} SP</dd></div><div><dt>Blocks mined</dt><dd>${fmt(state.blocks)}</dd></div><div><dt>Best speed</dt><dd>${fmt(state.bestSps)} / sec</dd></div><div><dt>Active playtime</dt><dd>${duration(state.playtime)}</dd></div></dl>${wallet.address ? `<span class="profile-address">${wallet.address}</span><div class="profile-actions"><button class="btn outline" data-action="copy-address">${icon("copy")}Copy address</button><a class="btn outline" href="${explorerUrl()}" target="_blank" rel="noopener noreferrer">Explorer ${icon("external")}</a><button class="btn outline" data-action="switch-network">Switch/Add ${CHAIN_CONFIG.name}</button><button class="btn outline" data-action="disconnect">Disconnect</button></div>` : '<button class="btn primary" data-action="connect">Connect Wallet</button>'}<p class="small muted" style="margin-top:12px">SqueekWheel only reads your address. It never moves your funds.</p>${canMigrate ? '<div class="notice">Your earlier save is still on this device. Import it once into this wallet profile. Export current progress first; importing replaces it.<button class="btn outline" id="migrate-legacy" style="margin-top:10px">Import earlier progress</button></div>' : ""}<div class="section-label">A bigger little empire</div><p class="small muted" style="margin-top:8px">Rebirth at 25 blocks per run. Keep SP, lifetime earnings, XP, badges, receipts, collection, cosmetics and your chain. Reset squeeks, upgrades and block difficulty.</p><div class="between" style="margin-top:12px"><span class="small muted">${state.runBlocks} / 25 blocks · ${state.prestige.toFixed(2)}× permanent</span><button class="btn outline" data-action="rebirth" ${isPlaying() && state.runBlocks < 25 ? "disabled" : ""}>${icon("rebirth")}Rebirth</button></div><div class="profile-actions"><button class="btn outline" data-action="share">${icon("external")}Share hamster card</button><button class="btn outline" data-action="settings">Save & settings</button></div>`;
       }
+
       function nativeSymbol() {
         return CHAIN_CONFIG.chainId === wallet.chainId && CHAIN_CONFIG.symbol
           ? CHAIN_CONFIG.symbol
@@ -5266,7 +4972,7 @@
           : "https://blockscan.com/address/" + wallet.address;
       }
       function updateCosmetics() {
-        const linked = !!wallet.address,
+        const linked = isPlaying(),
           hat = $("hamster-hat");
         hat.toggleAttribute("hidden", !linked || state.hat === "none");
         hat.innerHTML =
@@ -5279,6 +4985,7 @@
             : linked && state.wheelColor === "violet"
               ? ["#c0a6da", "#8b6aae"]
               : ["#f4aa60", "#d97836"];
+        document.querySelectorAll("#fur-grad stop").forEach((el,i)=>el.setAttribute("stop-color",activeBreed().id==="cheddar" ? ["#edb273","#d98c4d"][i] : activeBreed().fur));
         document
           .querySelectorAll("#wheel-grad stop")
           .forEach((stop, i) => stop.setAttribute("stop-color", colors[i]));
@@ -5286,9 +4993,11 @@
       // ====================================================================
       // Audio — synthesized sounds only; opt-in and preference remembered
       // ====================================================================
-      let audio = null;
+      let audio = null, audioUnlocked = false;
+      document.addEventListener("pointerdown",()=>{audioUnlocked=true;},{once:true,passive:true});
+      document.addEventListener("keydown",()=>{audioUnlocked=true;},{once:true,capture:true});
       function sound(type) {
-        if (muted) return;
+        if (muted || !audioUnlocked || soundVolume===0) return;
         try {
           audio ??= new (window.AudioContext || window.webkitAudioContext)();
           if (audio.state === "suspended") void audio.resume().catch(() => {});
@@ -5309,7 +5018,7 @@
             oscillator.type = "sine";
             oscillator.frequency.value = frequency;
             gain.gain.setValueAtTime(0, at);
-            gain.gain.linearRampToValueAtTime(0.045, at + 0.01);
+            gain.gain.linearRampToValueAtTime(Math.max(0.0001,0.045*soundVolume), at + 0.01);
             gain.gain.exponentialRampToValueAtTime(0.001, at + 0.17);
             oscillator.connect(gain);
             gain.connect(audio.destination);
@@ -5320,6 +5029,170 @@
           /* Audio unavailable: the game always remains playable. */
         }
       }
+      function playMusic() {
+        if(muted||!audioUnlocked||musicVolume===0||document.hidden)return;
+        try {
+          audio ??= new (window.AudioContext || window.webkitAudioContext)();
+          if(audio.state==="suspended")void audio.resume().catch(()=>{});
+          [261.63,329.63,392,329.63].forEach((frequency,i)=>{
+            const oscillator=audio.createOscillator(),gain=audio.createGain(),at=audio.currentTime+i*0.6;
+            oscillator.type="sine";oscillator.frequency.value=frequency;
+            gain.gain.setValueAtTime(0.0001,at);gain.gain.linearRampToValueAtTime(Math.max(0.0001,0.012*musicVolume),at+0.1);gain.gain.exponentialRampToValueAtTime(0.0001,at+0.55);
+            oscillator.connect(gain);gain.connect(audio.destination);oscillator.start(at);oscillator.stop(at+0.6);
+          });
+        } catch { /* Music unavailable: all controls and play remain available. */ }
+      }
+      setInterval(()=>{if(audio)playMusic();},3000);
+
+      // Small, local game systems. No external assets or services are needed.
+      const BREEDS = [
+        {id:"cheddar",name:"Cheddar",need:"Starter breed · always available",goal:0,stat:"luckyBlocks",speed:1,reward:1,cooling:1,fur:"#e8ae77",perk:"Classic companion. No passive bonus."},
+        {id:"silver",name:"Silver Dwarf",need:"Find 1 lucky block (Epic or Legendary)",goal:1,stat:"luckyBlocks",speed:1.08,reward:1,cooling:1,fur:"#b8b9c5",perk:"+8% squeeks/sec while active."},
+        {id:"fluff",name:"Winter Floof",need:"Find 5 lucky blocks (Epic or Legendary)",goal:5,stat:"luckyBlocks",speed:1,reward:1,cooling:1.5,fur:"#f4eee0",perk:"50% faster passive cooling while active."},
+        {id:"golden",name:"Golden Syrian",need:"Complete 1 Rebirth",goal:1,stat:"rebirths",speed:1,reward:1.10,cooling:1,fur:"#edc263",perk:"+10% block SP while active."},
+        {id:"cosmic",name:"Cosmic Campbell",need:"Complete 3 Rebirths",goal:3,stat:"rebirths",speed:1.15,reward:1.20,cooling:1,fur:"#bc9fcd",perk:"+15% squeeks/sec and +20% block SP while active."},
+      ];
+      function breedUnlocked(b) { return b.goal===0 || state[b.stat]>=b.goal; }
+      function activeBreed() { const b=BREEDS.find(b=>b.id===state.breed);return b&&breedUnlocked(b)?b:BREEDS[0]; }
+      function renderCollection() {
+        return `<div class="panel-heading"><h2>A wheel full of friends</h2><p>Active breeds bring one passive perk. Lucky blocks are Epic or Legendary game blocks.</p></div><div class="feature-list">${BREEDS.map(b=>`<article class="feature-item"><div class="between"><h3>${b.name}</h3><button class="btn small-btn outline" data-breed="${b.id}" ${isPlaying() && (!breedUnlocked(b)||activeBreed().id===b.id)?"disabled":""}>${activeBreed().id===b.id?"Active":breedUnlocked(b)?"Activate":"Locked"}</button></div><p>${b.perk}</p><p>${b.need} · ${exact(Math.min(state[b.stat],b.goal))} / ${b.goal}${breedUnlocked(b)?" · Unlocked":""}</p></article>`).join("")}</div>`;
+      }
+      const COSMETICS = [
+        {id:"top",name:"Top hat",key:"hat",value:"top",cost:100},
+        {id:"crown",name:"Cheddar crown",key:"hat",value:"crown",cost:400},
+        {id:"mint",name:"Garden mint wheel",key:"wheelColor",value:"mint",cost:150},
+        {id:"violet",name:"Lavender dusk wheel",key:"wheelColor",value:"violet",cost:200},
+        {id:"cheese",name:"Cheese block skin",key:"blockSkin",value:"cheese",cost:300},
+        {id:"circuit",name:"Circuit block skin",key:"blockSkin",value:"circuit",cost:500},
+      ];
+      function renderCosmetics() {
+        return `<div class="panel-heading"><h2>Make the wheel yours</h2><p>Spend SP on style. Perks and lifetime SP stay intact.</p></div><p class="small">Balance: ${exact(state.sp)} SP</p><div class="feature-list">${COSMETICS.map(c=>{const owned=state.cosmeticInventory[c.id], equipped=state[c.key]===c.value;return `<article class="feature-item"><div class="between"><div><h3>${c.name}</h3><p>${owned?"Owned":`${c.cost} SP required · ${exact(Math.min(state.sp,c.cost))} / ${c.cost} SP`}</p></div><button class="btn small-btn outline" data-cosmetic="${c.id}" ${isPlaying()&&(equipped||!owned&&state.sp<c.cost)?"disabled":""}>${equipped?"Equipped":owned?"Equip":`Buy · ${c.cost} SP`}</button></div></article>`;}).join("")}</div><button class="btn outline" style="margin-top:16px" data-action="reset-style">Use natural floof & orange wheel</button><p class="small muted" style="margin-top:10px">Cosmetics are game items bought with game points. No wallet payment.</p>`;
+      }
+      function buyCosmetic(id) {
+        if (!requirePlay()) return;
+        const c=COSMETICS.find(c=>c.id===id);if(!c)return;
+        if (!state.cosmeticInventory[id]) { if(state.sp<c.cost)return;state.sp-=c.cost;state.cosmeticInventory[id]=true; }
+        state[c.key]=c.value;state.cosmeticsUsed=true;checkBadges();updateCosmetics();chainDirty=true;save();renderAll();sound("buy");
+      }
+      let fanUntil=0,lastTapAt=0,activeChallenge=null,lastSampleAt=0;
+      function tapWheel() {
+        if (!requirePlay()) return;
+        const now=Date.now(); if(now<state.jamUntil||now-lastTapAt<120)return;
+        lastTapAt=now;state.taps++;const amount=Math.max(0.5,baseSps()*0.3);earn(amount);particle(amount);evaluateProgress();dirty=true;
+      }
+      function coolWheel() {
+        if (!requirePlay()) return;
+        if(Date.now()<fanUntil)return;
+        fanUntil=Date.now()+2000;state.heat=Math.max(0,state.heat-35);state.fanUses++;dirty=true;renderGameStatus();
+      }
+      function updateHeat(seconds) {
+        if(!isPlaying())return;
+        if(state.jamUntil&&Date.now()>=state.jamUntil){state.jamUntil=0;state.heat=Math.min(state.heat,35);dirty=true;}
+        state.heat=Math.max(0,state.heat-seconds*activeBreed().cooling);
+      }
+      function marketEvent(now=Date.now()) {
+        const cycle=600000,t=((now%cycle)+cycle)%cycle,base=now-t;
+        return t<180000?{name:"Bull Run",multiplier:1.5,until:base+180000}:
+          t<300000?{name:"Cheese Crash",multiplier:0.65,until:base+300000}:
+          {name:"Steady market",multiplier:1,until:base+cycle};
+      }
+      const CHALLENGES = [
+        {id:"sprint",name:"Block Sprint",goal:5,seconds:60,stat:"blocks",description:"Mine 5 blocks in 60 seconds. Offline blocks do not count."},
+        {id:"control",name:"Cool Paws",goal:12,seconds:60,stat:"boosts",description:"Give 12 Turbo boosts in 60 seconds without a jam. Use the fan."},
+        {id:"tapper",name:"Quick Paws",goal:100,seconds:30,stat:"taps",description:"Tap the wheel 100 times in 30 seconds. At most 8 taps per second count."},
+      ];
+      function challengeProgress(c) { return activeChallenge?.id===c.id?Math.min(c.goal,Math.max(0,state[c.stat]-activeChallenge.baseline)):state.challengeWins[c.id]?c.goal:0; }
+      function startChallenge(id) {
+        if(!requirePlay())return;const c=CHALLENGES.find(c=>c.id===id);if(!c||state.challengeWins[id])return;
+        activeChallenge={id,start:Date.now(),baseline:state[c.stat],jams:state.jams};
+        toast(`${c.name} started. ${c.seconds} seconds.`,"bolt");renderPanel();
+      }
+      function evaluateChallenge() {
+        if(!activeChallenge||!isPlaying())return;
+        const c=CHALLENGES.find(c=>c.id===activeChallenge.id),elapsed=(Date.now()-activeChallenge.start)/1000;
+        if(elapsed>c.seconds||c.id==="control"&&state.jams>activeChallenge.jams){activeChallenge=null;toast("Challenge ended. Try again when you’re ready.","info");panelDirty=true;return;}
+        if(challengeProgress(c)>=c.goal){state.challengeWins[c.id]=Date.now();activeChallenge=null;addSP(150);toast(`${c.name} complete. +150 SP and a claimable badge.`,"badge");panelDirty=true;save();}
+      }
+      function renderChallenges() {
+        return `<div class="section-label">Skill challenges<small>150 SP + badge each</small></div><div class="feature-list">${CHALLENGES.map(c=>`<article class="feature-item"><div class="between"><h3>${c.name}</h3><button class="btn small-btn outline" data-challenge="${c.id}" ${isPlaying()&&!!state.challengeWins[c.id]?"disabled":""}>${state.challengeWins[c.id]?"Completed":activeChallenge?.id===c.id?"Restart":"Start challenge"}</button></div><p>${c.description}</p><p data-challenge-status="${c.id}">${challengeStatus(c)}</p></article>`).join("")}</div>`;
+      }
+      function challengeStatus(c) {
+        return `${exact(challengeProgress(c))} / ${c.goal} · ${state.challengeWins[c.id]?"Completed":activeChallenge?.id===c.id?Math.max(0,Math.ceil(c.seconds-(Date.now()-activeChallenge.start)/1000))+"s left":c.seconds+"s limit"}`;
+      }
+      function dailySpin() {
+        if(!requirePlay()||state.spinDay===dayKey())return;
+        state.spinDay=dayKey();
+        const roll=Math.random();
+        if(roll<0.45){const reward=[30,60,90][Math.floor(Math.random()*3)];addSP(reward);state.spinResult=`+${reward} SP`;}
+        else if(roll<0.9){earn(200);state.spinResult="+200 squeeks";}
+        else{mineBlock("Epic");state.spinResult="An Epic lucky block";}
+        evaluateProgress();save();renderAll();sound("badge");toast(`Daily Lucky Spin: ${state.spinResult}.`,"spark");
+      }
+      function renderSpin() {
+        const used=state.spinDay===dayKey();
+        return `<div class="panel-heading"><h2>A little daily luck</h2><p>One free spin each UTC day. No purchases.</p></div><div class="dialog-art" style="color:var(--accent-ink)">${icon("spark")}</div><div class="spin-result">${used?escapeHtml(state.spinResult):"What will the wheel bring?"}</div><button class="btn primary" data-action="spin" style="width:100%" ${isPlaying()&&used?"disabled":""}>${used?"Spun today":"Spin for free"}</button><p class="small muted" style="margin-top:16px">45%: 30, 60 or 90 SP (equal chance). 45%: 200 squeeks. 10%: an Epic lucky block. Next free spin in <span data-reset="daily">${duration(nextReset("daily"))}</span>.</p>`;
+      }
+      function sampleStats() {
+        if(!isPlaying()||Date.now()-lastSampleAt<10000)return;
+        lastSampleAt=Date.now();state.samples.push({time:lastSampleAt,sps:sps(),blocks:state.blocks});state.samples=state.samples.slice(-120);
+        if(tab==="stats")panelDirty=true;
+      }
+      function renderLineChart(kind,title,unit) {
+        const samples=state.samples;
+        if(samples.length<2)return `<h3>${title}</h3><p class="small muted">${samples.length} / 2 samples. Mine for 10 seconds to draw this chart.</p>`;
+        const rows=samples.map((s,i)=>({time:s.time,value:kind==="sps"?s.sps:i?Math.max(0,(s.blocks-samples[i-1].blocks)*3600000/Math.max(1,s.time-samples[i-1].time)):0}));
+        const max=Math.max(1,...rows.map(r=>r.value)), start=rows[0].time, range=Math.max(1,rows[rows.length-1].time-start);
+        const points=rows.map(r=>`${(48+(r.time-start)/range*332).toFixed(1)},${(140-r.value/max*115).toFixed(1)}`).join(" ");
+        return `<h3>${title}</h3><svg class="stat-chart" viewBox="0 0 400 180" role="img" aria-labelledby="chart-${kind}-title chart-${kind}-desc"><title id="chart-${kind}-title">${title}</title><desc id="chart-${kind}-desc">${rows.length} observed samples over ${duration(range/1000)}. Latest ${rows[rows.length-1].value.toFixed(1)} ${unit}. Maximum ${max.toFixed(1)} ${unit}.</desc><path class="chart-grid" d="M48 25V140H380M48 82H380M48 25H380" fill="none"/><text x="4" y="30">${fmt(max)}</text><text x="20" y="143">0</text><text x="48" y="166">${new Date(start).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</text><text x="380" y="166" text-anchor="end">${new Date(rows[rows.length-1].time).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</text><polyline points="${points}"/></svg><p class="small muted">Latest: ${rows[rows.length-1].value.toFixed(1)} ${unit} · ${rows.length} observed samples.</p>`;
+      }
+      function renderStats() {
+        return `<div class="panel-heading"><h2>Every squeek accounted for</h2><p>Actual local samples, recorded every 10 seconds while signed in. The latest 120 are kept.</p></div>${renderLineChart("sps","Squeeks per second","squeeks/sec")}${renderLineChart("blocks","Blocks per hour","blocks/hour")}<p class="small muted" style="margin-top:16px">Blocks/hour is the rate between adjacent samples. Idle gaps are included; imported saves can change scores. These are game statistics.</p><dl class="profile-stats"><div><dt>Wheel taps</dt><dd>${exact(state.taps)}</dd></div><div><dt>Turbo boosts</dt><dd>${exact(state.boosts)}</dd></div><div><dt>Wheel jams</dt><dd>${exact(state.jams)}</dd></div><div><dt>Lucky blocks</dt><dd>${exact(state.luckyBlocks)}</dd></div></dl>`;
+      }
+      function applyActionLocks() {
+        const locked=!isPlaying();
+        const selector='[data-play],[data-buy],[data-claim],[data-badge-claim],[data-cosmetic],[data-breed],[data-challenge],[data-action="claim-all"],[data-action="spin"],[data-action="reset-style"],[data-action="rebirth"],#checkin,#fan,#turbo,#tap-wheel,#import-save,#reset-save';
+        document.querySelectorAll(selector).forEach(node=>{
+          const el=/** @type {HTMLButtonElement} */(node);
+          if(locked){
+            el.disabled=false;el.setAttribute("data-wallet-locked","");el.setAttribute("aria-disabled","true");el.title="Connect your wallet to play";
+            if(el.id!=="tap-wheel"&&!el.querySelector(".lock-mark"))el.insertAdjacentHTML("afterbegin",icon("lock","icon lock-mark"));
+          } else if(el.hasAttribute("data-wallet-locked")){
+            el.removeAttribute("data-wallet-locked");el.removeAttribute("aria-disabled");el.removeAttribute("title");el.querySelector(".lock-mark")?.remove();
+          }
+        });
+      }
+      function renderGameStatus() {
+        const playing=isPlaying(),jammed=playing&&Date.now()<state.jamUntil;
+        document.documentElement.dataset.playing=String(playing);
+        $("start-overlay").hidden=playing;
+        $("start-lock").innerHTML=icon("lock");
+        $("start-mining").textContent=wallet.address?"Sign in to Start Mining":"Connect Wallet to Start Mining";
+        $("start-message").textContent=wallet.address?"Sign once to start this profile.":"Sign in with one free signature.";
+        $("difficulty-label").textContent=`Network difficulty · ${(difficulty()/240).toLocaleString(undefined,{maximumFractionDigits:2})}× · ${exact(difficulty())} sq/block`;
+        $("breed-label").textContent=activeBreed().name+" · active breed";
+        $("hamster-name").textContent=activeBreed().name+" · "+(playing?"wheel crew":"ready when you are");
+        $("heat-label").textContent=jammed?`Jammed · ${Math.ceil((state.jamUntil-Date.now())/1000)}s · ${Math.ceil(state.heat)}% heat`:`Wheel heat · ${Math.ceil(state.heat)}%`;
+        $("heat-progress").setAttribute("aria-valuenow",String(Math.ceil(state.heat)));$("heat-progress").firstElementChild.style.width=state.heat+"%";
+        $("fan").disabled=playing&&Date.now()<fanUntil;$("fan").textContent=Date.now()<fanUntil?"Fan recharging…":"Cool with fan";
+        if(jammed)$("turbo-text").textContent="Jammed · cooling for 5s";
+        if(!playing)$("mining-status").textContent="Ready to start";
+        else if(jammed)$("mining-status").textContent="Cooling down";
+        const market=marketEvent();
+        $("market-ticker").textContent=`${market.name} · ${market.multiplier}× block SP · ${duration((market.until-Date.now())/1000)} ${market.multiplier===1?"to Bull Run":"left"}`;
+        const hint=$("network-hint");
+        const showHint=!!wallet.address&&!!wallet.chainId&&wallet.chainId!==CHAIN_CONFIG.chainId&&!wallet.networkDismissed;
+        hint.hidden=!showHint;
+        if(showHint&&!hint.children.length)hint.innerHTML=`<p>Different network. Mining still works. Ethereum is preferred.</p><button class="btn small-btn outline" data-action="switch-network">Switch/Add Network</button><button class="btn small-btn outline" data-action="dismiss-network">Dismiss</button>`;
+        if(!showHint)hint.replaceChildren();
+        document.querySelectorAll("[data-challenge-status]").forEach(el=>{const c=CHALLENGES.find(c=>c.id===el.getAttribute("data-challenge-status"));if(c)el.textContent=challengeStatus(c);});
+        applyActionLocks();
+      }
+      document.addEventListener("click",e=>{
+        const target=/** @type {HTMLElement} */(e.target).closest("[data-wallet-locked]");
+        if(target&&!isPlaying()){e.preventDefault();e.stopImmediatePropagation();connectModal();}
+      },true);
+      $("tap-wheel").onclick=tapWheel;$("fan").onclick=coolWheel;
+
       // ====================================================================
       // UI — rendering, navigation, sharing, save tools and tutorial
       // ====================================================================
@@ -5329,6 +5202,11 @@
         ["badges", "Badges", "badge"],
         ["leaderboard", "Ranks", "trophy"],
         ["profile", "Profile", "user"],
+        ["claims", "Claims", "check"],
+        ["collection", "Collection", "heart"],
+        ["cosmetics", "Cosmetics", "hat"],
+        ["spin", "Lucky Spin", "spark"],
+        ["stats", "Stats", "clock"],
       ];
       function renderTabs() {
         $("tabs").innerHTML = TABS.map(
@@ -5370,7 +5248,7 @@
               "data-claim",
               "data-badge-filter",
               "data-rank-period",
-              "data-action",
+              "data-action", "data-badge-claim", "data-breed", "data-cosmetic", "data-challenge", "data-receipt-copy",
             ].find((name) => focused.hasAttribute(name));
             if (attribute)
               restoreSelector = `[${attribute}="${CSS.escape(focused.getAttribute(attribute))}"]`;
@@ -5386,11 +5264,17 @@
                 ? renderBadges()
                 : tab === "leaderboard"
                   ? renderLeaderboard()
+                  : tab === "claims" ? renderClaims()
+                  : tab === "collection" ? renderCollection()
+                  : tab === "cosmetics" ? renderCosmetics()
+                  : tab === "spin" ? renderSpin()
+                  : tab === "stats" ? renderStats()
                   : renderProfile();
         if (tab === "profile") {
           const form = $("nickname-form");
           form.onsubmit = (e) => {
             e.preventDefault();
+            if(!requirePlay())return;
             const input = /** @type {HTMLInputElement} */ ($("nickname")),
               name = cleanName(input.value);
             if (!name) {
@@ -5407,22 +5291,15 @@
             toast("Nickname saved. That has a nice squeek to it.", "user");
           };
           $("nickname").oninput = (e) => e.target.setCustomValidity("");
-          if ($("verify-wallet"))
-            $("verify-wallet").onclick = () => void verifyWallet();
-          for (const [id, key] of [
-            ["hat-select", "hat"],
-            ["wheel-select", "wheelColor"],
-          ])
-            if ($(id))
-              $(id).onchange = (e) => {
-                state[key] = e.target.value;
-                if (state.hat !== "none" || state.wheelColor !== "orange")
-                  state.cosmeticsUsed = true;
-                checkBadges();
-                updateCosmetics();
-                save();
-              };
+          if($("migrate-legacy"))$("migrate-legacy").onclick=()=>{
+            if(!requirePlay())return;
+            confirmAction("Import your earlier progress?","This replaces the current wallet profile with the earlier save once. Export current progress first. The original earlier backup remains on this device.","Import earlier progress",()=>{
+              const old=loadState(identity.guestId);old.id=wallet.address;old.verified=true;old.verifiedFor=wallet.address;old.badgeReceipts={};old.lastSaved=Date.now();
+              state=old;storage.set("squeekwheel:legacy-imported",wallet.address);resetRuntime();lastLevel=getLevel();save();renderAll();
+            });
+          };
         }
+        applyActionLocks();
         if (restoreSelector) {
           const replacement = content.querySelector(restoreSelector);
           if (replacement && !replacement.disabled)
@@ -5479,6 +5356,11 @@
         }
         if (d.buy) buy(d.buy);
         if (d.claim) claimQuest(d.claim);
+        if (d.badgeClaim) void claimBadges([d.badgeClaim]);
+        if (d.breed && requirePlay()) {const b=BREEDS.find(x=>x.id===d.breed);if(b&&breedUnlocked(b)){state.breed=b.id;updateCosmetics();save();renderAll();}}
+        if (d.cosmetic) buyCosmetic(d.cosmetic);
+        if (d.challenge) startChallenge(d.challenge);
+        if (d.receiptCopy && state.badgeReceipts[d.receiptCopy]) void copyText(JSON.stringify({badge:d.receiptCopy,...state.badgeReceipts[d.receiptCopy]},null,2),"Receipt copied.");
         if (d.badgeFilter) {
           badgeFilter = d.badgeFilter;
           renderPanel();
@@ -5497,7 +5379,7 @@
           ? recent
               .map(
                 (b, i) =>
-                  `${i ? '<span class="chain-link" aria-hidden="true"></span>' : ""}<button class="block-tile ${b.rarity.toLowerCase()} ${i === 0 ? "new" : ""}" data-block="${b.number}" aria-label="View ${b.rarity} block ${b.number}, ${fmt(b.sp)} SP"><strong>#${b.number.toLocaleString()}</strong><small>${b.hash.slice(0, 6)}…${b.hash.slice(-3)}</small><span class="rarity">${b.rarity}</span></button>`,
+                  `${i ? '<span class="chain-link" aria-hidden="true"></span>' : ""}<button data-skin="${state.blockSkin}" class="block-tile ${b.rarity.toLowerCase()} ${i === 0 ? "new" : ""}" data-block="${b.number}" aria-label="View ${b.rarity} block ${b.number}, ${fmt(b.sp)} SP"><strong>#${b.number.toLocaleString()}</strong><small>${b.hash.slice(0, 6)}…${b.hash.slice(-3)}</small><span class="rarity">${b.rarity}</span></button>`,
               )
               .join("")
           : `<div class="chain-empty"><div class="genesis-art">${icon("block")}</div><div><strong>Every great chain starts small.</strong><p>Mine ${fmt(difficulty() - state.progress)} more squeeks to welcome your first block.</p></div></div>`;
@@ -5538,7 +5420,7 @@
           emptyChain.textContent = `Mine ${fmt(Math.max(0, difficulty() - state.progress))} more squeeks to welcome your first block.`;
         const remaining = Math.max(0, turboUntil - Date.now()),
           button = /** @type {HTMLButtonElement} */ ($("turbo"));
-        button.disabled = remaining > 0;
+        button.disabled = isPlaying() && (remaining > 0 || Date.now() < state.jamUntil);
         button.classList.toggle("ready", !remaining);
         $("turbo-text").textContent = remaining
           ? `Recharging · ${(remaining / 1000).toFixed(1)}s`
@@ -5546,7 +5428,7 @@
         $("turbo-fill").style.transform =
           `scaleX(${remaining ? 1 - remaining / 3000 : 0})`;
         $("turbo-hint").textContent =
-          `+${fmt(Math.max(15, sps() * 8))} squeeks · 3s cooldown`;
+          `+${fmt(Math.max(6, sps() * 5))} squeeks · 3s cooldown`;
         if (activeEvent) {
           $("event-label").textContent =
             activeEvent.type === "cat"
@@ -5566,14 +5448,14 @@
             : activeEvent?.type === "surge"
               ? "Extra squeek energy"
               : "Happily mining";
-        $("season-sp").textContent = fmt(state.sp) + " SP";
-        const season = Math.min(100, (state.sp / 5000) * 100);
+        $("season-sp").textContent = exact(state.earnedSP) + " lifetime SP";
+        const season = Math.min(100, (state.earnedSP / 20000) * 100);
         $("season-fill").style.width = season + "%";
         $("season-percent").textContent = Math.floor(season) + "%";
-        $("milestones").innerHTML = [250, 1000, 2500, 5000]
+        $("milestones").innerHTML = [1000, 4000, 10000, 20000]
           .map(
             (n) =>
-              `<span class="${state.sp >= n ? "done" : ""}">${state.sp >= n ? "✓ " : ""}${fmt(n)}${n === 5000 ? " SP" : ""}</span>`,
+              `<span class="${state.earnedSP >= n ? "done" : ""}">${state.earnedSP >= n ? "✓ " : ""}${exact(n)}${n === 20000 ? " SP" : ""}</span>`,
           )
           .join("");
         const lv = getLevel(),
@@ -5583,13 +5465,13 @@
         $("mini-name").textContent = state.name;
         $("mini-title").textContent = `Level ${lv} · ${levelTitle()}`;
         $("xp-text").textContent =
-          lv === 50
+          lv === 2000
             ? "Maximum level"
             : `${fmt(xp)} / ${fmt(next - current)} XP`;
         $("level-next").textContent =
-          lv === 50 ? "Grand Squeeker" : "Next level";
+          lv === 2000 ? "Grand Squeeker" : "Next level";
         $("xp-fill").style.width =
-          (lv === 50 ? 100 : Math.min(100, (xp / (next - current)) * 100)) +
+          (lv === 2000 ? 100 : Math.min(100, (xp / (next - current)) * 100)) +
           "%";
         updateShop();
         document
@@ -5600,7 +5482,17 @@
                 nextReset(el.getAttribute("data-reset")),
               )),
           );
+        if (tab === "badges") {
+          document.querySelectorAll("[data-badge-id]").forEach(article=>{
+            const b=BADGES.find(b=>b.id===article.getAttribute("data-badge-id"));if(!b)return;
+            const value=Math.min(b.value(),b.goal),bar=article.querySelector(".progress");
+            bar.setAttribute("aria-valuenow",String(Math.floor(value)));
+            /** @type {HTMLElement} */(bar.firstElementChild).style.width=(value/b.goal*100)+"%";
+            article.querySelector(".badge-progress-copy").textContent=`${exact(value)} / ${exact(b.goal)}${badgeReady(b)&&value<b.goal?" · Earlier unlock preserved":""}`;
+          });
+        }
         if (tab === "quests") updateQuests();
+        renderGameStatus();
       }
       function updateQuests() {
         for (const q of QUESTS) {
@@ -5611,7 +5503,7 @@
           const amount = Math.min(state[q.period][q.stat], q.goal),
             claimed = state.claims[questKey(q)],
             ready = amount >= q.goal;
-          button.disabled = !ready || !!claimed;
+          button.disabled = isPlaying() && (!ready || !!claimed);
           button.textContent = claimed
             ? "Claimed"
             : ready
@@ -5624,7 +5516,7 @@
           /** @type {HTMLElement} */ (bar.firstElementChild).style.width =
             (amount / q.goal) * 100 + "%";
           article.lastElementChild.textContent =
-            fmt(amount) + " / " + fmt(q.goal);
+            exact(amount) + " / " + exact(q.goal);
         }
       }
       function renderAll() {
@@ -5637,7 +5529,7 @@
         renderWalletButton();
         updateCosmetics();
         $("mini-avatar").innerHTML = avatar(wallet.address || state.id);
-        $("wallet-banner").hidden = state.bannerDismissed || !!wallet.address;
+        $("wallet-banner").hidden = state.bannerDismissed || isPlaying();
         renderDynamic();
         updateSaveStatus();
         panelDirty = false;
@@ -5650,19 +5542,13 @@
         save();
       };
       function help() {
-        modal(
-          "A tiny guide to big squeeks",
-          `<div class="stack"><div><h3>1. Keep the wheel turning</h3><p>Cheddar earns squeeks automatically. Tap Turbo or press Space for a boost every 3 seconds.</p></div><div><h3>2. Upgrade your little empire</h3><p>Spend squeeks on Wheel, Fuel and Crew upgrades. Buy one, ten, or as many as you can afford. Every upgrade adds mining speed.</p></div><div><h3>3. Build a chain. Make your mark.</h3><p>Every block earns permanent Squeek Points. Rare blocks earn more. Complete quests, claim daily treats and collect badges. Rebirth after 25 blocks for a bigger permanent multiplier.</p></div></div><div class="notice">Wallets are optional. Squeeks and SP are game scores with no monetary value. Your save stays in this browser, with up to 8 hours of offline earnings.</div><div class="dialog-actions"><button class="btn outline" id="start-tutorial">Take the 3-step tour</button><button class="btn primary" id="help-play">Back to the wheel</button></div>`,
-        );
-        $("start-tutorial").onclick = () => tutorial(0);
-        $("help-play").onclick = closeModal;
+        modal("A tiny guide to big squeeks", `<div class="stack"><div><h3>1. Connect and sign in</h3><p>Browse freely. Connect your wallet to start mining. One free signature starts your address’s local profile.</p></div><div><h3>2. Keep the wheel turning</h3><p>Tap the wheel for squeeks. Turbo or Space boosts every 3 seconds. Turbo adds 24% heat; 100% jams the wheel for 5 seconds. The fan cools 35% every 2 seconds.</p></div><div><h3>3. Upgrade and collect</h3><p>Spend squeeks on upgrades. Each block raises difficulty by 20% and earns SP. Spend SP on cosmetics, complete harder quests, and claim tiered badges with free signatures.</p></div><div><h3>4. Find a new friend</h3><p>Lucky blocks unlock breeds. Rebirth at 25 blocks per run for a permanent multiplier and new breeds. Try the daily spin or a timed skill challenge.</p></div></div><div class="notice">Squeeks and SP are game scores with no monetary value. Saves and signed receipts stay in this browser, per wallet. Offline earnings are capped at 8 hours and applied after sign-in.</div><div class="dialog-actions"><button class="btn outline" id="start-tutorial">Take the 3-step tour</button><button class="btn primary" id="help-play">Back to the wheel</button></div>`);
+        $("start-tutorial").onclick=()=>tutorial(0);$("help-play").onclick=closeModal;
       }
       function faq() {
-        modal(
-          "Good questions. Tiny answers.",
-          `<div class="faq"><details open><summary>Do I need a wallet?</summary><p>No. The entire game, all quests, levels, rebirths and guest leaderboard work without one. Three wallet badges and cosmetics are optional extras.</p></details><details><summary>Is connecting a wallet safe?</summary><p>SqueekWheel only reads your address, balance and network. It never asks for a private key, token approval or transaction. An optional personal signature adds a locally checked checkmark, with no gas. You can disconnect and keep playing.</p></details><details><summary>Am I mining real cryptocurrency?</summary><p>No. This is a playful idle game. Blocks, hashes, squeeks and SP are fictional and cannot be redeemed or transferred.</p></details><details><summary>Where is my progress saved?</summary><p>On this device, in this browser. Saves happen every 10 seconds. Clearing browser storage removes them, so export a backup in Save & settings. If storage is blocked, the game runs in memory; export before closing the page.</p></details><details><summary>Is the leaderboard online?</summary><p>No. Demo players are labeled. Your real score and other profiles on this device use a local adapter. Scores aren’t shared between browsers.</p></details><details><summary>How do offline earnings work?</summary><p>Your base mining speed and permanent multiplier keep earning for up to 8 hours. Temporary events don’t apply offline. Come back to collect squeeks, blocks, XP and SP automatically.</p></details><details><summary>What happens when I rebirth?</summary><p>Squeeks, upgrades and current block progress reset. SP, XP, badges, streaks and your chain stay. Mine 25 blocks in a run to unlock a permanent multiplier increase.</p></details></div>`,
-        );
+        modal("Good questions. Tiny answers.", `<div class="faq"><details open><summary>Do I need a wallet?</summary><p>Browse freely. Connect your wallet to start mining. Everything is viewable; playing, purchases, check-ins, spins and claims require sign-in.</p></details><details><summary>What am I signing?</summary><p>Sign in to SqueekWheel is a free personal signature containing your address, a nonce, time and this site’s origin. Sign-in lasts 7 days on this device. Badges use a separate readable claim message. SqueekWheel only reads your address. It never moves your funds. Balance and network are read for display. No keys, approvals, transactions or gas.</p></details><details><summary>Are badges NFTs?</summary><p>No. Receipts are signed by your wallet. They are saved locally and copyable in Claims. No contract or public attestation is involved. Game saves can be edited, so receipts are not proof of a competitive score.</p></details><details><summary>Am I mining real cryptocurrency?</summary><p>No. This is an idle game. Game blocks, hashes, squeeks and SP cannot be redeemed or transferred.</p></details><details><summary>Where is my progress saved?</summary><p>On this device in this browser, separately for each wallet address. Account changes load that address’s profile. Disconnect returns to browse mode. Saves happen every 10 seconds. Export a backup before clearing storage. With storage blocked, export before closing.</p></details><details><summary>Is the leaderboard online?</summary><p>No. Demo players are labeled. Real profiles on this device are keyed by wallet address. Scores are never sent to a server or shared across devices.</p></details><details><summary>Does the network matter?</summary><p>Mining and signatures work on every network. Ethereum is the preferred display network. The network hint is dismissible; Switch/Add Network never blocks play.</p></details><details><summary>How do offline earnings work?</summary><p>After signing in, base production, your breed speed perk and permanent multiplier earn up to 8 hours of progress. Temporary events and market bonuses are excluded. Timed challenges reset on account change or reload.</p></details><details><summary>What happens when I rebirth?</summary><p>At 25 run blocks, reset squeeks, upgrades and current block progress. Keep SP, lifetime SP, XP, badges, receipts, collection, cosmetics, streaks and your chain. Earn a permanent multiplier increase and unlock breeds.</p></details></div>`);
       }
+
       function tutorial(step = 0) {
         const steps = [
           [
@@ -5677,7 +5563,7 @@
           ],
           [
             "Make this little empire yours",
-            "Claim daily treats, finish quests and collect badges. Everything saves on this device. Wallets are always optional.",
+            "Connect and sign in, then claim daily treats, finish quests and collect badges. Everything saves per wallet on this device.",
             "badge",
           ],
         ];
@@ -5702,22 +5588,16 @@
         };
       }
       function exportString() {
-        return (
-          "SQW3." +
-          btoa(
-            String.fromCharCode(
-              ...new TextEncoder().encode(
-                JSON.stringify({ version: VERSION, state }),
-              ),
-            ),
-          )
-        );
+        const bytes=new TextEncoder().encode(JSON.stringify({version:VERSION,state}));
+        let text="";for(let i=0;i<bytes.length;i+=8192)text+=String.fromCharCode(...bytes.subarray(i,i+8192));
+        return "SQW3."+btoa(text);
       }
+
       function settings() {
         save();
         modal(
           "A safe place for your squeeks",
-          `<p>${storageAvailable ? "Your game saves on this device every 10 seconds. Export a backup to carry it to another browser." : "Browser storage is blocked. Your game is in memory for this session. Export a backup before closing this page."}</p><div class="field"><label for="save-string">Exported save string</label><textarea readonly id="save-string">${exportString()}</textarea></div><div class="profile-actions" style="margin-top:10px"><button class="btn outline" id="export-copy">${icon("copy")}Copy save</button><button class="btn outline" id="export-download">Download backup</button></div><div class="field"><label for="import-string">Import a SqueekWheel save</label><textarea id="import-string" spellcheck="false" placeholder="Paste your exported SQW save string"></textarea><span class="small" id="import-error" role="status"></span></div><button class="btn outline" id="import-save" style="margin-top:10px">Import save</button><div class="section-label">Comfort settings</div><div class="profile-actions" style="margin-top:10px"><button class="btn outline" id="settings-sound">${muted ? "Turn sound on" : "Mute sound"}</button><button class="btn outline" id="settings-motion">${motionPaused ? "Resume animations" : "Pause animations"}</button></div><p class="small muted" style="margin-top:8px">Reduced motion also follows your device preference.</p><div class="section-label">A clean start</div><p class="small muted" style="margin-top:5px">This resets only the current profile. Export your save first.</p><button class="btn outline danger" id="reset-save" style="margin-top:10px">Reset this profile</button>`,
+          `<p>${storageAvailable ? "Your game saves on this device every 10 seconds. Export a backup to carry it to another browser." : "Browser storage is blocked. Your game is in memory for this session. Export a backup before closing this page."}</p><div class="field"><label for="save-string">Exported save string</label><textarea readonly id="save-string">${exportString()}</textarea></div><div class="profile-actions" style="margin-top:10px"><button class="btn outline" id="export-copy">${icon("copy")}Copy save</button><button class="btn outline" id="export-download">Download backup</button></div><div class="field"><label for="import-string">Import a SqueekWheel save</label><textarea id="import-string" spellcheck="false" placeholder="Paste your exported SQW save string"></textarea><span class="small" id="import-error" role="status"></span></div><button class="btn outline" id="import-save" style="margin-top:10px">Import save</button><div class="section-label">Comfort settings</div><label class="volume-field" for="sound-volume">Sound volume<input id="sound-volume" type="range" min="0" max="100" value="${Math.round(soundVolume*100)}"></label><label class="volume-field" for="music-volume">Music volume<input id="music-volume" type="range" min="0" max="100" value="${Math.round(musicVolume*100)}"></label><div class="profile-actions" style="margin-top:10px"><button class="btn outline" id="settings-sound">${muted ? "Turn sound on" : "Mute sound"}</button><button class="btn outline" id="settings-motion">${motionPaused ? "Resume animations" : "Use reduced motion"}</button></div><p class="small muted" style="margin-top:8px">Reduced motion also follows your device preference.</p><div class="section-label">A clean start</div><p class="small muted" style="margin-top:5px">This resets only the current profile. Export your save first.</p><button class="btn outline danger" id="reset-save" style="margin-top:10px">Reset this profile</button>`,
         );
         $("export-copy").onclick = () =>
           void copyText(exportString(), "Save copied. Keep it somewhere safe.");
@@ -5727,11 +5607,12 @@
             "squeekwheel-save.txt",
           );
         $("import-save").onclick = () => {
+          if(!requirePlay())return;
           try {
             const text = /** @type {HTMLTextAreaElement} */ (
               $("import-string")
             ).value.trim();
-            if (text.length > 500000 || !/^SQW[123]\./.test(text))
+            if (text.length > 4000000 || !/^SQW[123]\./.test(text))
               throw Error("Use an exported SQW save string.");
             const decoded = new TextDecoder().decode(
                 Uint8Array.from(atob(text.slice(5)), (c) => c.charCodeAt(0)),
@@ -5740,13 +5621,16 @@
             if (![1, 2, 3].includes(payload.version) || !payload.state)
               throw Error("This save version isn’t supported.");
             const imported = validateState(payload.state);
+            if(validAddress(imported.id)&&imported.id!==wallet.address)throw Error("Use the wallet address that exported this save.");
+            imported.id=wallet.address;
             confirmAction(
               "Replace this profile’s save?",
               "Importing replaces this profile’s current progress. Other profiles stay saved. Export your current game first if you want to keep both.",
               "Import & replace",
               () => {
                 state = imported;
-                state.verified = false;
+                state.verified = isPlaying();
+                state.verifiedFor = wallet.address;
                 state.lastSaved = Date.now();
                 activeEvent = null;
                 $("event-bar").hidden = true;
@@ -5768,6 +5652,8 @@
             $("import-string").focus();
           }
         };
+        $("sound-volume").oninput=e=>{soundVolume=Number(e.target.value)/100;muted=false;applyPreferences();savePreferences();sound("buy");};
+        $("music-volume").oninput=e=>{musicVolume=Number(e.target.value)/100;muted=false;applyPreferences();savePreferences();playMusic();};
         $("settings-sound").onclick = () => {
           $("sound-toggle").click();
           $("settings-sound").textContent = muted
@@ -5777,10 +5663,11 @@
         $("settings-motion").onclick = () => {
           $("motion-toggle").click();
           $("settings-motion").textContent = motionPaused
-            ? "Resume animations"
-            : "Pause animations";
+            ? "Use full motion"
+            : "Use reduced motion";
         };
-        $("reset-save").onclick = () =>
+        $("reset-save").onclick = () => {
+          if(!requirePlay())return;
           confirmAction(
             "Reset this profile permanently?",
             "All progress, upgrades, badges and quests for this profile will be removed. Other profiles are kept. This cannot be undone without an exported backup.",
@@ -5800,6 +5687,8 @@
               toast("Fresh wheel. New possibilities.", "wheel");
             },
           );
+        };
+        applyActionLocks();
       }
       function downloadBlob(blob, name) {
         const url = URL.createObjectURL(blob),
@@ -5889,18 +5778,23 @@
               "SQ-" + hash(state.id).toString(36).toUpperCase(),
               "Referral code copied.",
             ),
+          "copy-page": () => void copyText(location.href,"Page link copied. Open it in your wallet’s browser."),
           "copy-address": () =>
             void copyText(wallet.address, "Wallet address copied."),
           rebirth,
+          "claim-all":()=>void claimBadges(BADGES.map(b=>b.id)),
+          spin:dailySpin,
+          "reset-style":()=>{if(!requirePlay())return;state.hat="none";state.wheelColor="orange";state.blockSkin="classic";save();renderAll();},
           "switch-network": () => void switchNetwork(),
           "dismiss-network": () => {
             wallet.networkDismissed = true;
+            renderGameStatus();
             renderPanel();
           },
           "block-info": () =>
             modal(
               "Every block is a tiny victory",
-              `<p>Each wheel rotation earns squeeks. Reach the current mining target to add a block to your chain. Targets grow by 13% with each block in a run.</p><div class="stack" style="margin-top:18px">${RARITIES.map((r) => `<div class="between"><strong>${r.name}</strong><span class="small muted">${r.bonus}× block SP · ${r.name === "Common" ? "65" : r.name === "Rare" ? "25" : r.name === "Epic" ? "8.5" : "1.5"}% chance</span></div>`).join("")}</div><div class="notice">Hashes are randomly generated game illustrations. No actual blockchain or funds are involved. Select a mined block for its full hash, timestamp and reward.</div>`,
+              `<p>Each wheel rotation earns squeeks. Reach the current mining target to add a block to your chain. Targets start at 240 squeeks and grow by 20% with each block in a run.</p><div class="stack" style="margin-top:18px">${RARITIES.map((r) => `<div class="between"><strong>${r.name}</strong><span class="small muted">${r.bonus}× block SP · ${r.name === "Common" ? "65" : r.name === "Rare" ? "25" : r.name === "Epic" ? "8.5" : "1.5"}% chance</span></div>`).join("")}</div><div class="notice">Hashes are randomly generated game illustrations. No actual blockchain or funds are involved. Select a mined block for its full hash, timestamp and reward.</div>`,
             ),
         };
         actions[action]?.();
@@ -5924,17 +5818,9 @@
       evaluateProgress(true);
       renderAll();
       welcomeBack();
-      window.dispatchEvent(new Event("eip6963:requestProvider"));
+      try { window.dispatchEvent(new Event("eip6963:requestProvider")); } catch { /* Extension discovery is nonessential to browsing. */ }
+      setTimeout(()=>{discoveryFinished=true;renderWalletList();void silentReconnect();},1500);
       void silentReconnect();
-      // Non-blocking onboarding: the tour is always available, but never covers the game on load.
-      if (!state.tutorial)
-        setTimeout(() => {
-          if (!$("dialog").open)
-            toast(
-              "Welcome, little miner. Give Cheddar a Turbo boost to begin!",
-              "wheel",
-            );
-        }, 1800);
       setInterval(save, 10000);
       setInterval(() => {
         resetPeriods();
@@ -5944,12 +5830,13 @@
       let hiddenAt = 0;
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
-          state.lastSaved = Date.now();
+          if(isPlaying())state.lastSaved = Date.now();
           save();
           hiddenAt = Date.now();
         } else {
           if (hiddenAt) {
             const elapsed = (Date.now() - hiddenAt) / 1000;
+            activeChallenge=null;
             if (elapsed >= 60) {
               welcomeBack();
             } else if (elapsed > 0) {

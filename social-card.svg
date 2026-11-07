@@ -4,9 +4,9 @@
   <text x="75" y="100" fill="#703309" font-family="Arial,sans-serif" font-size="30" font-weight="bold">SqueekWheel</text>
   <text x="75" y="250" fill="#292d3b" font-family="Arial,sans-serif" font-size="76" font-weight="bold" letter-spacing="-4">Small paws.</text>
   <text x="75" y="340" fill="#292d3b" font-family="Arial,sans-serif" font-size="76" font-weight="bold" letter-spacing="-4">Big blocks.</text>
-  <text x="75" y="410" fill="#706d66" font-family="Arial,sans-serif" font-size="24">Your cozy little hamster-powered mining empire.</text>
-  <rect x="75" y="474" width="295" height="64" rx="18" fill="#ff8b3d"/>
-  <text x="106" y="515" fill="#42240f" font-family="Arial,sans-serif" font-size="24" font-weight="bold">Free to play. Just squeek.</text>
+  <text x="75" y="410" fill="#706d66" font-family="Arial,sans-serif" font-size="24">Browse freely. Connect your wallet to start mining.</text>
+  <rect x="75" y="474" width="370" height="64" rx="18" fill="#ff8b3d"/>
+  <text x="106" y="515" fill="#42240f" font-family="Arial,sans-serif" font-size="24" font-weight="bold">Connect your wallet to mine.</text>
   <circle cx="940" cy="305" r="170" fill="none" stroke="#dc8a45" stroke-width="24"/>
   <g stroke="#dc8a45" stroke-width="5" opacity=".45"><path d="M770 305h340M940 135v340M820 185l240 240M820 425l240-240"/></g>
   <path d="m903 455-24 70h122l-24-70" fill="#e0a166"/>
