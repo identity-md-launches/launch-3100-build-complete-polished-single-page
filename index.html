@@ -5042,7 +5042,7 @@
           });
         } catch { /* Music unavailable: all controls and play remain available. */ }
       }
-      setInterval(()=>{if(audio)playMusic();},3000);
+      setInterval(playMusic,3000);
 
       // Small, local game systems. No external assets or services are needed.
       const BREEDS = [
@@ -5232,7 +5232,12 @@
         if (focus) $("tab-" + id).focus();
       }
       function renderPanel() {
-        if (tab === "profile" && $("nickname") === document.activeElement)
+        const nickname = $("nickname"), profileForm = $("nickname-form");
+        // Keep a draft only while this editable form still belongs to this session.
+        if (tab === "profile" && nickname && nickname === document.activeElement &&
+            isPlaying() && !nickname.hasAttribute("readonly") &&
+            profileForm?.dataset.address === wallet.address &&
+            profileForm.dataset.requestId === String(wallet.requestId))
           return;
         const content = $("panel-content");
         // Keep keyboard focus stable when purchases or rewards update this panel.
@@ -5271,11 +5276,19 @@
                   : tab === "stats" ? renderStats()
                   : renderProfile();
         if (tab === "profile") {
-          const form = $("nickname-form");
+          const form = $("nickname-form"),
+            profileAddress = wallet.address, profileRequestId = wallet.requestId;
+          form.dataset.address = profileAddress || "";
+          form.dataset.requestId = String(profileRequestId);
           form.onsubmit = (e) => {
             e.preventDefault();
+            if (profileAddress !== wallet.address || profileRequestId !== wallet.requestId || !form.isConnected) {
+              toast("Profile changed. Review the current profile before saving.", "info");
+              renderPanel();
+              return;
+            }
             if(!requirePlay())return;
-            const input = /** @type {HTMLInputElement} */ ($("nickname")),
+            const input = /** @type {HTMLInputElement} */ (form.querySelector("#nickname")),
               name = cleanName(input.value);
             if (!name) {
               input.setCustomValidity(

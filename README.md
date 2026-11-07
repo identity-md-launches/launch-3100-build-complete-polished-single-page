@@ -52,7 +52,7 @@ SP balance is spendable on cosmetics. **Lifetime SP** records all SP earned, dri
 
 ## Saves and earlier progress
 
-Profiles and leaderboard entries are keyed by the lowercase wallet address. Account changes load that address’s own profile; a new address never inherits the previous player’s progress. The deterministic hamster avatar also uses the address. The leaderboard is explicitly local to this browser, with seeded competitors labeled **Demo**; there is no online ranking or cloud save.
+Profiles and leaderboard entries are keyed by the lowercase wallet address. A focused nickname draft survives refreshes for the same signed-in session; switching accounts or disconnecting replaces that form immediately. Stale nickname submissions cannot change another profile. Account changes load that address’s own profile; a new address never inherits the previous player’s progress. The deterministic hamster avatar also uses the address. The leaderboard is explicitly local to this browser, with seeded competitors labeled **Demo**; there is no online ranking or cloud save.
 
 The existing `squeekwheel:v3:<address>` keys and `SQW3.` export format remain. Import also accepts earlier SQW1/SQW2 envelopes with validated defaults for newer fields. Importing an address-bound backup requires that same signed-in address. Sign-in credentials are separate from the game export, so importing progress cannot sign someone in. Game saves are editable local data and do not establish a verified competitive score.
 
@@ -64,13 +64,13 @@ Every storage operation is caught. Blocked storage or quota failures preserve fr
 
 ## Validation
 
-The production build and TypeScript `checkJs` typecheck passed. **169 browser assertions passed with zero console, page or resource errors**, and taste@1 passed **16/16 checks**. The Chromium interaction suite exercises the production export with simulated EIP-1193 providers and fresh ephemeral test signers. It covers wallet errors, real signature recovery, gameplay, claims, account/network races, persistence, migration, large saves, storage/audio denial and responsive layouts. No real wallet account or funds are used. Final counts and the six-domain design review are recorded in [VALIDATION.md](./VALIDATION.md).
+The production build and TypeScript `checkJs` typecheck passed. **188 browser assertions passed with zero console, page or resource errors**, and taste@1 passed **16/16 checks**. The Chromium interaction suite exercises the production export with simulated EIP-1193 providers and fresh ephemeral test signers. It covers wallet errors, real signature recovery, gameplay, claims, account/network races, persistence, migration, large saves, storage/audio denial and responsive layouts. No real wallet account or funds are used. The revision adds regression coverage for focused nickname edits during account changes/disconnect and music-only playback after reload. Final counts and the six-domain design review are recorded in [VALIDATION.md](./VALIDATION.md).
 
 ```sh
 python3 scripts/setup-checks.py
 npm run build
 npm run typecheck
-IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright npm test
+TMPDIR=/tmp IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright npm test
 ```
 
 The setup helper prepares validation-only tooling in disposable `test/scratch/`. A global TypeScript compiler also works. For another development machine, provide an installed Playwright module through `IMD_PLAYWRIGHT` and its browser location through `PLAYWRIGHT_BROWSERS_PATH`; those tools are not production dependencies.

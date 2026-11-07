@@ -8,7 +8,7 @@ Reviewed on 2026-11-07 against the production export served under `/preview/`. T
 | --- | --- |
 | Production build | `npm run build` passed; complete relative-path export in `dist/` |
 | Typecheck | `npm run typecheck` passed using TypeScript 5.9.3 `allowJs` + `checkJs` + `noEmit` |
-| Browser interactions | **169 assertions passed** in Chromium with simulated EIP-1193 providers and ephemeral account signers |
+| Browser interactions | **188 assertions passed** in Chromium with simulated EIP-1193 providers and ephemeral account signers |
 | Runtime failures | **0** collected browser console errors, page errors or failed resource requests in the interaction suite |
 | Responsive checks | No page overflow at **320, 390, 820 and 1440px**, including connected headers and the tested management panels |
 | First phone screen | Product, illustrated wheel and **Connect Wallet to Start Mining** visible at 390px; checked in rendered screenshots |
@@ -23,11 +23,26 @@ Commands run:
 python3 scripts/setup-checks.py
 npm run build
 npm run typecheck
-IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright npm test
-IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright node .imd/reads/skills/design-critic/scripts/taste.mjs --out test/scratch/taste --offline
+TMPDIR=/tmp IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright npm test
+TMPDIR=/tmp IMD_PLAYWRIGHT=/opt/imd-tools/playwright-mcp/node_modules/playwright/index.mjs PLAYWRIGHT_BROWSERS_PATH=/opt/imd-tools/ms-playwright node .imd/reads/skills/design-critic/scripts/taste.mjs --out test/scratch/taste --offline
 ```
 
-The supplied browser connector returned `Transport closed`. Direct Playwright Chromium successfully rendered the actual export, ran the interactions and produced screenshots. Rendered observations below come from those screenshots and browser measurements, not source inference. The development preview was owned by each bounded verification script and closed afterward.
+The supplied browser connector could not launch. Direct Playwright Chromium successfully rendered the actual export, ran the interactions and produced screenshots. Rendered observations below come from those screenshots and browser measurements, not source inference. The development preview was owned by each bounded verification script and closed afterward.
+
+## Revision verification
+
+Both reported defects were reproduced in Chromium at 1440×900 against the unchanged export before editing application source. After signing into two simulated accounts and saving Alice/Bob, switching from a focused “Alice draft” to Bob left Bob in state but Alice’s address/draft in the form; Save renamed Bob. Separately, saved effects volume 0 and music volume 0.5 left `audio` null after reload, a pointer gesture and 3.3 seconds. Both reproductions collected zero browser errors.
+
+| Severity / source | Targeted change | Recheck |
+| --- | --- | --- |
+| High / `index.html:5234`, `index.html:5283` | Preserve a focused draft only when its editable form matches the current address and wallet request ID. Account activation/disconnect replaces it. Bind submission to the rendered address/session and read its own form input; reject detached/stale forms. | The original Alice/Bob reproduction now displays Bob’s address/name immediately and Save retains Bob. Added checks cover same-session background reads, cached sign-in restoring editability/focus, stale form submission, keyboard Save, separate stored names, switch-back and focused disconnect. |
+| Medium / `index.html:5045` | Invoke `playMusic` directly every three seconds so its existing guards and caught lazy audio initialization work independently of effects volume. | After the original reload/gesture sequence, effects stay 0, music stays 0.5 and AudioContext is running. The regression suite additionally verifies no initialization before interaction and at least four scheduled music oscillators afterwards. |
+
+The final interaction suite passes **188 assertions**, including **19 added regression assertions**. Production build, TypeScript checkJs and all 16 taste@1 checks passed again. The suite serves the actual export under `/preview/`; no test hooks are included in the production files. Original reproduction and corrected-state checks used a disposable `test/scratch/revision/reproduce.mjs`; maintained regressions are in `scripts/validate.mjs`.
+
+Revision design coverage: accessibility checked native form submission with Enter, retained nickname focus, read-only browse state and the visible focus ring; layout/typography checked the 390px first screen and switched desktop profile screenshot; writing checked the calm stale-form message; colors and UI checked the retained tokens, measured solid-text contrast, component states and reduced-motion probe. The final 390px screenshot still shows the product and start action above the fixed navigation. No styling, gameplay, save-format, dependency or build-configuration changes were needed. Physical wallets, screen readers, native zoom, WebKit, forced colors and audible speaker output remain unverified. WebAudio initialization/scheduling was measured, rather than judged by listening.
+
+The account-switch screenshot is `test/scratch/interaction/switched-profile-1440.png`; it was opened to confirm the new name/address and visible nickname focus ring. These screenshots and results are disposable validation evidence. Both findings are answered as fixed in `.imd-responses.json`.
 
 ## Requirement coverage
 
@@ -61,7 +76,7 @@ The supplied browser connector returned `Transport closed`. Direct Playwright Ch
 
 `npm test` runs `scripts/validate.mjs` against `dist/index.html`, using a temporary HTTP server and Chromium. Its signer generates fresh secp256k1 keys and signing points with Node crypto; no fixed private key is shipped. Known empty/abc Keccak vectors also pass. Test providers expose only the methods needed for account reads, signatures and network changes. The suite asserts that no transaction or approval method is requested and that maximum simultaneous provider requests stays at one.
 
-The 169 assertions cover: no-wallet browsing and locked actions; install/discovery states; connect rejection and locking; rejected and malformed signatures; successful sign-in; taps and keyboard Turbo; original Cat/laser, Surge, Golden Seed and Lucky Block events; overheating/fan; harder upgrade prices and ×10 purchase; rising difficulty; individual, declined, duplicate and batch badge claims; independently generated signature recovery; receipt copy fallback; cosmetics and collection; daily spin/check-in and duplicate prevention; harder quest claims; skill success, timeout and jam failure; two chart paths; nickname changes; wrong-network hint/dismissal/Switch/Add; silent reload; stale pending claims during account change; switching back; disconnect/reload; expired authentication; invalid/valid import; failed reads; storage/audio denial; malformed injection; five named EIP-6963 wallets; offline cap; Rebirth; visible wheel/block cosmetics; UTC reset; market multipliers; quota fallback; large batch export/import; stale destructive confirmations; and one-time earlier-save migration.
+The 188 assertions cover: focused nickname isolation on account switch/disconnect; same-session draft preservation and stale-form rejection; independent saved music after reload; no-wallet browsing and locked actions; install/discovery states; connect rejection and locking; rejected and malformed signatures; successful sign-in; taps and keyboard Turbo; original Cat/laser, Surge, Golden Seed and Lucky Block events; overheating/fan; harder upgrade prices and ×10 purchase; rising difficulty; individual, declined, duplicate and batch badge claims; independently generated signature recovery; receipt copy fallback; cosmetics and collection; daily spin/check-in and duplicate prevention; harder quest claims; skill success, timeout and jam failure; two chart paths; nickname changes; wrong-network hint/dismissal/Switch/Add; silent reload; stale pending claims during account change; switching back; disconnect/reload; expired authentication; invalid/valid import; failed reads; storage/audio denial; malformed injection; five named EIP-6963 wallets; offline cap; Rebirth; visible wheel/block cosmetics; UTC reset; market multipliers; quota fallback; large batch export/import; stale destructive confirmations; and one-time earlier-save migration.
 
 Timed completion, long offline gaps, high-tier progress and large saves use controlled test state. They do not represent hours of manual play. Routine interaction paths use actual rendered controls, native dialogs and browser keyboard events. Locked controls are intentionally `aria-disabled` while remaining clickable to explain sign-in; the test explicitly activates that explanatory path.
 
@@ -70,7 +85,7 @@ Screenshot/results paths created during verification (disposable, regenerated by
 - `test/scratch/taste/shots/390.png`, `390-full.png`, `1440.png`, `1440-full.png`
 - `test/scratch/taste/taste.json`
 - `test/scratch/interaction/browse-320.png`, `browse-390.png`, `browse-820.png`, `browse-1440.png`
-- `test/scratch/interaction/signed-in-390.png`, `signed-in-1440.png`
+- `test/scratch/interaction/signed-in-390.png`, `signed-in-1440.png`, `switched-profile-1440.png`
 - `test/scratch/interaction/results.json`
 
 The 390px browse and signed-in screenshots and the desktop game screenshot were opened and visually inspected. Screenshot paths are validation scratch output, not required runtime assets.
