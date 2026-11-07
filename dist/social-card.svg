@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#faf7f0"/>
+  <circle cx="1030" cy="300" r="330" fill="#fff0dd"/>
+  <text x="75" y="100" fill="#703309" font-family="Arial,sans-serif" font-size="30" font-weight="bold">SqueekWheel</text>
+  <text x="75" y="250" fill="#292d3b" font-family="Arial,sans-serif" font-size="76" font-weight="bold" letter-spacing="-4">Small paws.</text>
+  <text x="75" y="340" fill="#292d3b" font-family="Arial,sans-serif" font-size="76" font-weight="bold" letter-spacing="-4">Big blocks.</text>
+  <text x="75" y="410" fill="#706d66" font-family="Arial,sans-serif" font-size="24">Your cozy little hamster-powered mining empire.</text>
+  <rect x="75" y="474" width="295" height="64" rx="18" fill="#ff8b3d"/>
+  <text x="106" y="515" fill="#42240f" font-family="Arial,sans-serif" font-size="24" font-weight="bold">Free to play. Just squeek.</text>
+  <circle cx="940" cy="305" r="170" fill="none" stroke="#dc8a45" stroke-width="24"/>
+  <g stroke="#dc8a45" stroke-width="5" opacity=".45"><path d="M770 305h340M940 135v340M820 185l240 240M820 425l240-240"/></g>
+  <path d="m903 455-24 70h122l-24-70" fill="#e0a166"/>
+  <ellipse cx="932" cy="375" rx="83" ry="65" fill="#e6a460"/>
+  <circle cx="980" cy="314" r="26" fill="#e6a460"/><circle cx="980" cy="314" r="15" fill="#eeb29e"/>
+  <circle cx="1024" cy="320" r="23" fill="#e6a460"/>
+  <ellipse cx="1004" cy="366" rx="63" ry="55" fill="#e6a460"/>
+  <ellipse cx="1018" cy="380" rx="46" ry="38" fill="#fff0d5"/>
+  <circle cx="1025" cy="350" r="7" fill="#292d3b"/><circle cx="1027" cy="348" r="2" fill="white"/>
+  <ellipse cx="1060" cy="373" rx="7" ry="5" fill="#b66e61"/>
+  <path d="M1053 384q-6 9-16 0" fill="none" stroke="#8b5c3e" stroke-width="3" stroke-linecap="round"/>
+  <text x="75" y="590" fill="#706d66" font-family="Arial,sans-serif" font-size="18">Mined by hamsters. Secured by squeaks.</text>
+</svg>
